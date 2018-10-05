@@ -1,0 +1,15 @@
+---
+title: "Figures"
+output:
+  pdf_document:
+    fig_caption: yes
+    keep_tex: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.path = "../figures/", fig.width = 5, fig.height = 6, dev = c("pdf"))
+```
+
+```{r 01_iris, fig.cap="Sepal length versus width", echo=FALSE, fig.width=1,out.height="4in"}
+knitr::include_graphics("../figures/01_iris-1.pdf")
+```

@@ -3,3 +3,9 @@
 .RData
 .Ruserdata
 
+manuscript/*.tex
+figures/*.tex
+tables/*.tex
+figures/*.pdf
+data/*.csv
+*.Rproj

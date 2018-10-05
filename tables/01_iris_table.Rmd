@@ -1,0 +1,26 @@
+---
+output:
+  pdf_document
+header-includes: 
+  - \pagenumbering{gobble}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.path = "../figures/", fig.width = 5, fig.height = 6)
+```
+
+```{r read_chunks, cache=FALSE, echo=FALSE}
+knitr::read_chunk("../scripts/99_utils.R")
+```
+
+```{r source_utils, message=FALSE, results='hide', echo=FALSE, warning=FALSE}
+
+```
+
+```{r load_data, message=FALSE, results='hide', echo=FALSE, warning=FALSE}
+source("../scripts/01.5_loaddata.R")
+```
+
+```{r iris_table, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+knitr::kable(head(iris), caption = "Iris table")
+```
