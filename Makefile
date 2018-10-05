@@ -36,4 +36,4 @@ tables/01_iris_table.pdf: tables/01_iris_table.Rmd
 manuscript: manuscript/draft.pdf
 
 manuscript/draft.pdf: manuscript/draft.md
-	pandoc manuscript/draft.md -o manuscript/draft.pdf
+	cd manuscript && make all
