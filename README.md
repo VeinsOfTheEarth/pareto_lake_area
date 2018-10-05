@@ -12,6 +12,14 @@ Appendix: [manuscript/appendix.pdf](manuscript/appendix.pdf)
 
 Manuscript: [manuscript/draft.pdf](manuscript/draft.pdf)
 
+### Usage
+
+* Fill-out [README.md](README.md) title, journal target, and reproducibility requirements (using `packrat:::appDependencies()`)
+
+* Define `data`, `figures`, and `tables` targets in [Makefile](Makefile)
+
+* With `make` run `make all`
+
 ### Reproducibility
 
 #### Data requirements
@@ -19,4 +27,4 @@ Manuscript: [manuscript/draft.pdf](manuscript/draft.pdf)
 #### System requirements
 
 * R
-  * somepackage
+  * `packrat:::appDependencies()`
