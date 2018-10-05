@@ -9,3 +9,4 @@ tables/*.tex
 figures/*.pdf
 data/*.csv
 *.Rproj
+draft.bbl
