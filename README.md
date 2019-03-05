@@ -1,3 +1,5 @@
+[Notes Scratch-pad](https://docs.google.com/document/d/1ks71d9FZYyjgkdFlzzFcGP2AVxJ-hFSeCDLOytpufoc/edit?usp=sharing)
+
 Code and data for:
 
 ## Quantifying uncertainty in areal lake methane flux
@@ -10,7 +12,7 @@ Figures: [manuscript/figures.pdf](manuscript/figures.pdf)
 
 Appendix: [manuscript/appendix.pdf](manuscript/appendix.pdf)
 
-Manuscript: [manuscript/draft.pdf](manuscript/draft.pdf)
+Manuscript: [manuscript/manuscript.pdf](manuscript/manuscript.pdf)
 
 ### Usage
 
