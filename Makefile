@@ -33,7 +33,7 @@ manuscript/tables.pdf: tables/01_iris_table.pdf
 tables/01_iris_table.pdf: tables/01_iris_table.Rmd
 	Rscript -e "rmarkdown::render('$<', output_format = 'pdf_document')"
 
-manuscript: manuscript/draft.pdf
+manuscript: manuscript/manuscript.pdf
 
-manuscript/draft.pdf: manuscript/draft.md
-	cd manuscript && make all
+manuscript/manuscript.pdf: manuscript/manuscript.Rmd manuscript/pinp.cls manuscript/appendix.pdf figures tables manuscript/pinp.bib
+	Rscript -e "rmarkdown::render('$<')"

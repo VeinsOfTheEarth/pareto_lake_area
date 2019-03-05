@@ -10,3 +10,4 @@ figures/*.pdf
 data/*.csv
 *.Rproj
 draft.bbl
+*.log
