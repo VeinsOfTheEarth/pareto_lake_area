@@ -16,6 +16,7 @@
 \usepackage{graphicx}
 \usepackage{natbib}
 \usepackage{doi}
+\usepackage{listings}
 
 
 
@@ -43,10 +44,9 @@
 %%% Once the PDF is generated, you can check the metadata with
 %%% $ pdfinfo template.pdf
 \hypersetup{
-pdftitle={A template for the arxiv style},
+pdftitle={Quantifying uncertainty in Pareto lake area estimates},
 pdfsubject={q-bio.NC, q-bio.QM},
-pdfauthor={David S.~Hippocampus, Elias D.~Striatum},
-pdfkeywords={First keyword, Second keyword, More},
+pdfauthor={J.~Stachelek}
 }
 
 \begin{document}
@@ -87,66 +87,100 @@ The reason for using the ccdf is two-fold. First, it stabilizes model estimates 
 
 \begin{figure}
 	\centering
-	\fbox{\rule[-.5cm]{4cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
+	\includegraphics{figures/pareto_demo-1}
 	\caption{Realization of a Pareto (A) probability density function and (B) complementary cumulative distribution function.}
-	\label{fig:fig1}
+	\label{fig:pareto_demo}
 \end{figure}
 
-\subsection{Headings: second level}
-\lipsum[5]
-\begin{equation}
-	\xi _{ij}(t)=P(x_{t}=i,x_{t+1}=j|y,v,w;\theta)= {\frac {\alpha _{i}(t)a^{w_t}_{ij}\beta _{j}(t+1)b^{v_{t+1}}_{j}(y_{t+1})}{\sum _{i=1}^{N} \sum _{j=1}^{N} \alpha _{i}(t)a^{w_t}_{ij}\beta _{j}(t+1)b^{v_{t+1}}_{j}(y_{t+1})}}
-\end{equation}
+For evaluation purposes, I generated a simulated dataset of 10,000 lake areas following the Pareto distribution using inverse transform sampling \citep{newman_power_2005}. Lakes in my simulated dataset have a minimum and maximum area of approximately 1 and 81000 $km^2$ respectively. This maximum was chosen to be approximately as large as Lake Superior but less than the Caspian Sea following \citet{lehnerDevelopmentValidationGlobal2004}. The "true" total area of these lakes is approximately 230000 $km^2$. I simulated a censored lake dataset by excluding lakes smaller than $e^{1}$. This excludes (censors) approximately 60\% of the total dataset. I approximated the "true" lake area total by constructing the empirical distribution function (edf) of the data which approximates the underlying Pareto cdf \citep{newman_power_2005}. Then I used this estimate of the cdf slope to generate cdf estimates for the censored lakes. I combined these cdf estimates with the edf values from the known lakes before calculating the sum of the inverted distribution (Figure \ref{fig:predict_area}).
 
-\subsubsection{Headings: third level}
-\lipsum[6]
+I estimated the Pareto shape parameter $a$ in a frequentist framework by calculating the the slope of the edf in log-log space using linear regression in \texttt{R} \citep{team2013r}. I evaluated uncertainty in both $a$ and total lake area in a Bayesian framework using Stan \citep{standevelopmentteamStanModelingLanguage2017}. Instead of computing on the edf (as in the frequentist case), I computed directly on the pdf with the following Stan model:
 
-\paragraph{Paragraph}
-\lipsum[7]
+\begin{minipage}[c]{0.95\textwidth}
+\begin{lstlisting}
+data {
+  int<lower=0> N;
+  real x[N];
+}
+parameters {
+  real<lower=0> alpha;
+  real<lower=0> xmin;
+}
+model {
+  real lpa[N];
 
+  xmin ~ gamma(.001, .001);
+  alpha ~ gamma(.001, .001);
 
+  for (i in 1:N) {
+    lpa[i] = pareto_lpdf(x[i] | xmin, alpha);
+  }
 
-\section{Examples of citations, figures, tables, references}
-\label{sec:others}
+  target += sum(lpa);
+}
+\end{lstlisting}
+\end{minipage}
 
-\subsection{Figures}
+I used vague gamma priors for both the $x_{min}$ and $a$ parameters following \citet{scollnikCompositeLognormalParetoModels2007}. I ran the model with four chains of 8,000 iterations and used the Stan defaults for burn-in and thinning which specify a burn-in of half the iterations and no thinning.
 
-See Figure \ref{fig:fig1}.
+\section{Results}
+
+Visual inspection of the frequentist method of computing on the edf appeared to produce a reasonable density estimate for small censored lakes (Figure \ref{fig:predict_area}). In addition, estimates of total lake area are somewhat close to the "true" value (Table \ref{tab:pred_table}). However, uncertainty around the frequentist estimates is unrealistically small (Figure \ref{fig:frequentist_uncertainty}).
 
 \begin{figure}
 	\centering
-	\fbox{\rule[-.5cm]{4cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
-	\caption{Sample figure caption.}
-	\label{fig:fig1}
+	\includegraphics{figures/predict_area-1}
+	\caption{Censored lake area edf (solid line) and cdf estimate (dashed line).}
+	\label{fig:predict_area}
 \end{figure}
 
+\begin{figure}
+	\centering
+	\includegraphics{figures/frequentist_uncertainty-1}
+	\caption{Confidence interval of frequentist density predictions for censored data (the dashed portion in Figure 2. The confidence interval here has essentially no width.}
+	\label{fig:frequentist_uncertainty}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics{figures/bayesian_model-1}
+	\caption{Median (black line) and central 95 percent interval estimates of alpha (red lines). Here the 'true' alpha is 0.9.}
+	\label{fig:bayesian_model}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics{figures/bayesian_area-1}
+	\caption{Median (black line) and central 95 percent interval estimates of total lake area (red lines). Here the true total lake area is marked with a dashed vertical line.}
+	\label{fig:bayesian_area}
+\end{figure}
+
+Instead of the essentially fixed $a$ and total lake area estimates produced by the frequentist approach, I found a substantial variability in both $a$ (95\% CI: 0.86, 0.92) and total area using a Bayesian approach (Fig \ref{fig:bayesian_model}, \ref{fig:bayesian_area}). In particular, the Bayesian 95\% credible intervals for both $a$ and total lake area encapsulate the true values (Fig \ref{fig:bayesian_model}, \ref{fig:bayesian_area}). Despite better uncertainty estimates using a Bayesian approach, both the frequentist and Bayesian approaches underestimated the true value of $a$ and total lake area.
+
+\begin{table}
+	\caption{'True' total lake area from the uncensored edf and estimated lake area from a combination of the censored edf and the estimated cdf.}
+	\centering
+	\begin{tabular}{ll}
+	\toprule
+		True Area ($km^2$) & Estimated Area ($km^2$) \\
+	\midrule
+		2.271e+05 & 2.263e+05 \\
+	\bottomrule
+	\end{tabular}
+	\label{tab:pred_table}
+\end{table}
+
+\section{Discussion}
+
+I have shown that the typical frequentist cutoff method produces reasonable estimates of the density of small censored lakes but that it does not capture uncertainty in total lake area (Table \ref{tab:pred_table}, Figure \ref{fig:frequentist_uncertainty}). Furthermore, I have shown that models fit using a Bayesian approach indicate substantial uncertainty in both total lake area and the underlying Pareto shape parameter $a$ used to derive these estimates (Figure \ref{fig:bayesian_model}, \ref{fig:bayesian_area}).
+
+Although the 95\% credible interval of the Bayesian total lake area estimates encapsulate the true total lake area, the median value underestimates the true total lake area (Figure \ref{fig:bayesian_area}). It is likely that such underestimation, would increase with a greater proportion of censoring. This may explain the steady increase in estimates of global lake area through time from approximately 3 to 5 million $km^{2}$ as lake area databases have improved their accuracy \citep{lehnerDevelopmentValidationGlobal2004, downingGlobalAbundanceSize2006, verpoorterGlobalInventoryLakes2014}. Future work on estimating global lake area should consider implementing a sensitivity analysis looking at the response of total area estimates to variation in the degree of censoring.
+
+Future investigators should be mindful that is difficult to confirm whether or not any particular dataset following a fractal generating or Pareto process without strong prior knowledge. Indeed data following many heavy-tailed distributions such as the lognormal or negative exponential can appear to be equivalent to power-law distributions such as the Pareto \citep{clausetPowerlawDistributionsEmpirical2009}. The results of the present study confirm that an apparent change in the shape of the lower tail of a lake area distribution does not necessarily indicate a change in the data generating process. Note that the simulation dataset analyzed herein \emph{is} a truly fractal generated dataset with a homogeneous data generating process yet a cursory look would seem to indicate a change of data-generating process in the lower tail (Figure \ref{fig:predict_area}).
+
+In addition to a sensitivity analysis of censoring, future work should consider more complex models that treat lake areas as a mixture of a Pareto distribution for small lakes and either a negative exponential or lognormal distribution for large lakes. Such an approach has been demonstrated by \citet{bonabeau_scaling_1999-1} and \citet{scollnikCompositeLognormalParetoModels2007}. Both studies have shown that the point at which the distribution mixtures converge can provide valuable inference. In the case of lakes, such a convergence point may indicate a change in the data generating process (i.e. the point at which lake area are controlled by continent placement rather than fractal landscape morphology \citep{goodchildLakesFractalSurfaces1988, hamiltonEstimationFractalDimension1992}.
+
 \bibliographystyle{unsrtnat}
-\bibliography{pareto-lakes}  %%% Uncomment this line and comment out the ``thebibliography'' section below to use the external .bib file (using bibtex) .
-
-
-%%% Uncomment this section and comment out the \bibliography{references} line above to use inline references.
-% \begin{thebibliography}{1}
-
-% 	\bibitem{kour2014real}
-% 	George Kour and Raid Saabne.
-% 	\newblock Real-time segmentation of on-line handwritten arabic script.
-% 	\newblock In {\em Frontiers in Handwriting Recognition (ICFHR), 2014 14th
-% 			International Conference on}, pages 417--422. IEEE, 2014.
-
-% 	\bibitem{kour2014fast}
-% 	George Kour and Raid Saabne.
-% 	\newblock Fast classification of handwritten on-line arabic characters.
-% 	\newblock In {\em Soft Computing and Pattern Recognition (SoCPaR), 2014 6th
-% 			International Conference of}, pages 312--318. IEEE, 2014.
-
-% 	\bibitem{hadash2018estimate}
-% 	Guy Hadash, Einat Kermany, Boaz Carmeli, Ofer Lavi, George Kour, and Alon
-% 	Jacovi.
-% 	\newblock Estimate and replace: A novel approach to integrating deep neural
-% 	networks with existing applications.
-% 	\newblock {\em arXiv preprint arXiv:1804.09028}, 2018.
-
-% \end{thebibliography}
-
+\bibliography{pareto-lakes}
 
 \end{document}

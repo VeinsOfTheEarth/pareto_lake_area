@@ -22,5 +22,5 @@ figures/A1_iris-1.pdf: figures/A1_iris.Rmd
 
 manuscript: manuscript/manuscript.pdf
 
-manuscript/manuscript.pdf: manuscript/manuscript.Rmd manuscript/pinp.cls manuscript/appendix.pdf figures manuscript/pinp.bib
-	Rscript -e "rmarkdown::render('$<')"
+manuscript/manuscript.pdf: manuscript/template.tex manuscript/pinp.cls manuscript/appendix.pdf figures manuscript/pinp.bib
+	cd manuscript && pdflatex template.tex
