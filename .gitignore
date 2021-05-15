@@ -12,3 +12,4 @@ data/*.csv
 draft.bbl
 *.log
 data/*.rds
+README.html
