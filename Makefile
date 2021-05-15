@@ -1,11 +1,6 @@
-.PHONY: data figures tables manuscript all
+.PHONY: data figures manuscript all
 
-all: data figures tables manuscript
-
-data: data/iris.csv
-
-data/iris.csv: scripts/00_get_iris.R
-	Rscript $<
+all: data figures manuscript
 
 figures: data manuscript/figures.pdf manuscript/appendix.pdf
 
@@ -25,15 +20,7 @@ manuscript/appendix.pdf: manuscript/appendix.Rmd figures/A1_iris-1.pdf
 figures/A1_iris-1.pdf: figures/A1_iris.Rmd
 	Rscript -e "rmarkdown::render('$<', output_format = 'pdf_document')"
 
-tables: data manuscript/tables.pdf
-
-manuscript/tables.pdf: tables/01_iris_table.pdf
-	pdftk $^ cat output manuscript/tables.pdf
-
-tables/01_iris_table.pdf: tables/01_iris_table.Rmd
-	Rscript -e "rmarkdown::render('$<', output_format = 'pdf_document')"
-
 manuscript: manuscript/manuscript.pdf
 
-manuscript/manuscript.pdf: manuscript/manuscript.Rmd manuscript/pinp.cls manuscript/appendix.pdf figures tables manuscript/pinp.bib
+manuscript/manuscript.pdf: manuscript/manuscript.Rmd manuscript/pinp.cls manuscript/appendix.pdf figures manuscript/pinp.bib
 	Rscript -e "rmarkdown::render('$<')"
