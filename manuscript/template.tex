@@ -1,0 +1,152 @@
+\documentclass{article}
+
+
+
+\usepackage{arxiv}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+%\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{lipsum}		% Can be removed after putting your text content
+\usepackage{graphicx}
+\usepackage{natbib}
+\usepackage{doi}
+
+
+
+\title{Quantifying uncertainty in Pareto lake area estimates}
+
+%\date{September 9, 1985}	% Here you can change the date presented in the paper title
+%\date{} 					% Or removing it
+
+\author{ \href{https://orcid.org/0000-0000-0000-0000}{\includegraphics[scale=0.06]{orcid.pdf}\hspace{1mm}J.~Stachelek}\thanks{\href{https://jsta.rbind.io}{https://jsta.rbind.io}} \\
+	Center for Limnology\\
+	University of Wisconsin-Madison\\
+	Madison, WI 53706 \\
+	\texttt{stachelek@wisc.edu} \\
+}
+
+% Uncomment to remove the date
+%\date{}
+
+% Uncomment to override  the `A preprint' in the header
+%\renewcommand{\headeright}{Technical Report}
+%\renewcommand{\undertitle}{Technical Report}
+\renewcommand{\shorttitle}{Pareto lake area uncertainty}
+
+%%% Add PDF metadata to help others organize their library
+%%% Once the PDF is generated, you can check the metadata with
+%%% $ pdfinfo template.pdf
+\hypersetup{
+pdftitle={A template for the arxiv style},
+pdfsubject={q-bio.NC, q-bio.QM},
+pdfauthor={David S.~Hippocampus, Elias D.~Striatum},
+pdfkeywords={First keyword, Second keyword, More},
+}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+	Size is a critical factor determining the rate and occurrence of specific lake processes such as carbon sequestration relative to greenhouse gas emissions. Upscaling estimates of such processes at broad spatial scales requires the use of lake size-abundance distributions rather than empirical measurements of area because we do not have a complete census of all lakes. The reason for this is that as lakes become smaller they are more likely to not be included in lake databases either because they are too small to be resolved from remote sensing products or because of limited ground surveying effort (i.e. "censoring" of small lakes relative to large lakes).
+
+  The present study explores one potential shortcoming of prior approaches estimating global lake area using lake size-abundance distributions. Namely, these prior approaches rely on frequentist curve fitting techniques combined with an ad-hoc cutoff determination strategy (visual inspection to determine a likely censoring point) taken by previous studies yields an over-exact lake area estimate with no reported uncertainty. I address this shortcoming by fitting models in a Bayesian framework where each parameter contributes uncertainty to model estimates. I show that such although such models produce a more realistic estimate of lake area uncertainty they underestimate true total lake area. The degree of this underestimation is likely related to the proportion of the dataset subject to censoring. Ultimately, this may explain the fact that total lake area estimates have increased through time as the resolution of lake databases has improved.
+\end{abstract}
+
+
+% keywords can be removed
+%\keywords{lake area \and pareto \and limnology}
+
+
+\section{Introduction}
+Size is a critical factor determining the rate and occurence of specific lake processes such as carbon burial and sequestration \citep{delsontroGreenhouseGasEmissions2018, kellerGlobalCarbonBudget2021}. However, the relative contribution of small and large water bodies to overall nutrient and material cycling is unknown \citep{alexander2000effect}. One way to estimate their relative contributions is to combine information on per area processing rates with estimates of total area \citep{winslowDoesLakeSize2015}.
+
+One of the challenges in estimating total lake area is that the distribution of individual lake areas spans a range of approximately 7 orders of magnitude whereby the largest lakes are so big they could otherwise be classified as inland seas (> $10^4$ $km^2$) while the smallest are barely larger than a regulation sized soccer field (> $10^{-3}$ $km^2$). Another important characteristic of lake area is that the area of the largest lakes is known exactly while the area of the smallest lakes is incomplete below a certain unknown threshold. This can occur either because lakes are too small to be resolved from remote sensing products or because of limited ground surveying effort. In this sense, lake databases are said to be censored at small lake areas because we know that small lakes exist but below a certain threshold we have limited knowledge of their exact areas \citep{hamiltonEstimationFractalDimension1992}.
+
+Estimating total lake area from a sample of lakes requires a conceptual model of how lakes are formed (i.e. the data generating process). Typically, lake areas are treated as arising from a fractal generating process due to the fact that landform topography, which determines the placement of lakes, can itself be treated as a fractal generating process. Indeed, many other geomorphological phenomena that are dependent on landform topography such as coastline length are often well-described by fractal generating processes \citep{newman_power_2005}.
+
+Another challenge in estimating total lake area is that the area distribution of the largest lakes likely follows a different data generating process than that of the smallest lakes. The reason that largest lakes likely follow a different data generating process is that they are constrained not by local landform topography but by the placement and arrangement of continents. As lakes become larger they have a greater probability of intersecting a continent edge and becoming an estuary or embayment rather than a lake \citep{goodchildLakesFractalSurfaces1988}. In this sense, lake databases are said to be truncated on large lakes because we know that large lakes are essentially fixed in space and cannot occur in any given location \citep{hamiltonEstimationFractalDimension1992}.
+
+From the preceding discussion it is clear that estimating total lake area requires a method of dealing both with the fact that lake databases are truncated at large lakes and censored at small lakes. Previous studies estimating global lake area have essentially not dealt with the first issue but instead modified their estimation process to limit its effect on the results (see methods section). They have dealt with the second issue by specifying an ad-hoc cutoff value below which empirically determined lake areas are discarded and subsequently back calculated. Hereafter, I refer to this strategy as the cutoff method. In the present study, I explore the effects of using the typical frequentist approach for estimating total lake area (i.e. the cutoff method) via a simulation study. In addition, I demonstrate an approach to produce uncertainty estimates of total lake area in a Bayesian framework. I evaluate the effects of the cutoff method on a simulated dataset because it is not sensitive to other potential confounding factors such as heterogeneity of survey effort or data precision.
+
+\section{Methods}
+
+Lake areas are typically treated as arising from a scale-invariant fractal generating process \citep{winslowDoesLakeSize2015, downingGlobalAbundanceSize2006, mcdonald_regional_2012, goodchildLakesFractalSurfaces1988, hamiltonEstimationFractalDimension1992}. Essentially, this means that the number of lakes in one size class is proportional to the number of lakes in the preceding size class irrespective of their magnitudes. The numerical form describing such a process is a power-law function. One of the statistical tools often used to model data that follow a power-law function is the Pareto distribution which has a probability density function (pdf) of:
+
+\begin{equation}
+    ccdf(A) = \frac{x_{min}}{(1-A)^{\frac{1}{\alpha}}}
+  \label{eqn:pareto_ccdf}
+\end{equation}
+
+The reason for using the ccdf is two-fold. First, it stabilizes model estimates in the lower tail of the distribution \citep{newman_power_2005}. This can be seen from the simulated data in Figure \ref{fig:pareto_demo} where the Pareto pdf contains a lot of noise in the tail but the ccdf appears smoothed. The smoothing of the tail is also desirable because it functions as a way of dealing with the truncated nature of lake databases. The second reason for using the ccdf is that it provides a computational shortcut for estimating the Pareto shape parameter $a$ because it is numerically equivalent to the slope of the ccdf in log-log space \citep{downingGlobalAbundanceSize2006}.
+
+\begin{figure}
+	\centering
+	\fbox{\rule[-.5cm]{4cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
+	\caption{Realization of a Pareto (A) probability density function and (B) complementary cumulative distribution function.}
+	\label{fig:fig1}
+\end{figure}
+
+\subsection{Headings: second level}
+\lipsum[5]
+\begin{equation}
+	\xi _{ij}(t)=P(x_{t}=i,x_{t+1}=j|y,v,w;\theta)= {\frac {\alpha _{i}(t)a^{w_t}_{ij}\beta _{j}(t+1)b^{v_{t+1}}_{j}(y_{t+1})}{\sum _{i=1}^{N} \sum _{j=1}^{N} \alpha _{i}(t)a^{w_t}_{ij}\beta _{j}(t+1)b^{v_{t+1}}_{j}(y_{t+1})}}
+\end{equation}
+
+\subsubsection{Headings: third level}
+\lipsum[6]
+
+\paragraph{Paragraph}
+\lipsum[7]
+
+
+
+\section{Examples of citations, figures, tables, references}
+\label{sec:others}
+
+\subsection{Figures}
+
+See Figure \ref{fig:fig1}.
+
+\begin{figure}
+	\centering
+	\fbox{\rule[-.5cm]{4cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
+	\caption{Sample figure caption.}
+	\label{fig:fig1}
+\end{figure}
+
+\bibliographystyle{unsrtnat}
+\bibliography{pareto-lakes}  %%% Uncomment this line and comment out the ``thebibliography'' section below to use the external .bib file (using bibtex) .
+
+
+%%% Uncomment this section and comment out the \bibliography{references} line above to use inline references.
+% \begin{thebibliography}{1}
+
+% 	\bibitem{kour2014real}
+% 	George Kour and Raid Saabne.
+% 	\newblock Real-time segmentation of on-line handwritten arabic script.
+% 	\newblock In {\em Frontiers in Handwriting Recognition (ICFHR), 2014 14th
+% 			International Conference on}, pages 417--422. IEEE, 2014.
+
+% 	\bibitem{kour2014fast}
+% 	George Kour and Raid Saabne.
+% 	\newblock Fast classification of handwritten on-line arabic characters.
+% 	\newblock In {\em Soft Computing and Pattern Recognition (SoCPaR), 2014 6th
+% 			International Conference of}, pages 312--318. IEEE, 2014.
+
+% 	\bibitem{hadash2018estimate}
+% 	Guy Hadash, Einat Kermany, Boaz Carmeli, Ofer Lavi, George Kour, and Alon
+% 	Jacovi.
+% 	\newblock Estimate and replace: A novel approach to integrating deep neural
+% 	networks with existing applications.
+% 	\newblock {\em arXiv preprint arXiv:1804.09028}, 2018.
+
+% \end{thebibliography}
+
+
+\end{document}
