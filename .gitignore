@@ -11,3 +11,4 @@ data/*.csv
 *.Rproj
 draft.bbl
 *.log
+data/*.rds
