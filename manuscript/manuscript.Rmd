@@ -1,12 +1,12 @@
 ---
-title: Estimating Uncertainty in Global Lake Area
+title: Quantifying uncertainty in Pareto lake area estimates
 
 author:
   - name: Joseph Stachelek
     affiliation: a
 address:
   - code: a
-    address: Department of Fisheries and Wildlife, Michigan State University, East Lansing, MI, USA
+    address: Center for Limnology, University of Wisconsin-Madison, Madison, WI, USA
 
 lead_author_surname: Stachelek
 
