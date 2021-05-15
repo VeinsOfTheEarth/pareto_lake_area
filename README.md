@@ -1,10 +1,6 @@
-[Notes Scratch-pad](https://docs.google.com/document/d/1ks71d9FZYyjgkdFlzzFcGP2AVxJ-hFSeCDLOytpufoc/edit?usp=sharing)
-
 Code and data for:
 
-## Quantifying uncertainty in areal lake methane flux
-
-> Journal Target: Limnology and Oceanography: Letters
+## Quantifying uncertainty in Pareto lake area estimates
 
 ### Products
 
@@ -28,3 +24,5 @@ Manuscript: [manuscript/manuscript.pdf](manuscript/manuscript.pdf)
 
 * R
   * `packrat:::appDependencies()`
+
+<!--- [Notes Scratch-pad](https://docs.google.com/document/d/1ks71d9FZYyjgkdFlzzFcGP2AVxJ-hFSeCDLOytpufoc/edit?usp=sharing) --->
