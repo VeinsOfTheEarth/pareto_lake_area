@@ -1,3 +1,5 @@
+[![Paper DOI](https://img.shields.io/badge/Paper-DOI-blue.svg)](https://doi.org) [![Code DOI](https://img.shields.io/badge/Code-DOI-blue.svg)](https://doi.org/)
+
 Code and data for:
 
 ## Quantifying uncertainty in Pareto lake area estimates
