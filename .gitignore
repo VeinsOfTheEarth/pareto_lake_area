@@ -245,3 +245,5 @@ README.html
 *.rds
 .Rproj.user/
 *.Rproj
+manuscript/save_manuscript.Rmd
+manuscript/save_manuscript.pdf
