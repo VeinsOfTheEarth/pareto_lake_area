@@ -57,7 +57,7 @@ pareto_demo <- plot_grid(
     theme_minimal() + scale_x_log10() + scale_y_log10() +
     ylab("samples with value > x") + xlab("x"),
   nrow = 1)
-ggsave("../manuscript/figures/pareto_demo.pdf", pareto_demo,
+ggsave("../manuscript/figures/pareto_demo-1.pdf", pareto_demo,
        width = 5.93, height = 2.33)
 
 # remove lakes below censor threshold ####
@@ -102,7 +102,7 @@ res         <- dplyr::bind_rows(cf_extra, cf)
 predict_area <- ggplot(data = res) +
   geom_line(aes(x = area, y = density, linetype = type)) +
   scale_x_log10() + theme(legend.title = element_blank())
-ggsave("../manuscript/figures/predict_area.pdf", predict_area,
+ggsave("../manuscript/figures/predict_area-1.pdf", predict_area,
        width = 4.28, height = 2.33)
 
 # back-out an estimate of total area
@@ -123,7 +123,7 @@ stack_preds <- data.frame(preds = stack_preds,
 frequentist_uncertainty <- ggplot() +
   geom_line(data = stack_preds, aes(x = area, y = preds, color = type)) +
   scale_x_log10() + xlab("density") + labs(color = "Confidence \n Interval")
-ggsave("../manuscript/figures/frequentist_uncertainty.pdf", frequentist_uncertainty,
+ggsave("../manuscript/figures/frequentist_uncertainty-1.pdf", frequentist_uncertainty,
        width = 5.93, height = 2.33)
 
 # ---- bayesian_model ----
@@ -178,7 +178,7 @@ bayesian_model <- ggplot() + geom_histogram(data = data.frame(alpha = alphas), a
   geom_vline(aes(xintercept = conf_int[c(1,3)]), color = "red") +
   geom_vline(aes(xintercept = conf_int[2])) +
   geom_vline(aes(xintercept = 0.9), linetype = 2)
-ggsave("../manuscript/figures/bayesian_model.pdf", bayesian_model,
+ggsave("../manuscript/figures/bayesian_model-1.pdf", bayesian_model,
        width = 4.43, height = 2.33)
 
 # ---- bayesian_area ----
@@ -207,7 +207,7 @@ bayesian_area <- ggplot() + geom_histogram(data = data.frame(area = area_bayes),
   geom_vline(aes(xintercept = conf_int[c(1,3)]), color = "red") +
   geom_vline(aes(xintercept = conf_int[2])) +
   geom_vline(aes(xintercept = total_empirical), linetype = 2)
-ggsave("../manuscript/figures/bayesian_area.pdf", bayesian_area,
+ggsave("../manuscript/figures/bayesian_area-1.pdf", bayesian_area,
        width = 4.36, height = 2.33)
 
 # ggplot(data = res) +
