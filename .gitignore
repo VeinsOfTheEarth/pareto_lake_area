@@ -242,7 +242,6 @@ TSWLatexianTemp*
 *.spl
 .Rhistory
 README.html
-*.rds
 .Rproj.user/
 *.Rproj
 manuscript/save_manuscript.Rmd
