@@ -247,3 +247,5 @@ README.html
 manuscript/save_manuscript.Rmd
 manuscript/save_manuscript.pdf
 arxiv_submission.zip
+config.py
+.vscode/
