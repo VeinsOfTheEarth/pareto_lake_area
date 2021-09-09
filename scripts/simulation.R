@@ -4,6 +4,8 @@ library(dplyr)
 library(magrittr)
 library(ggplot2)
 library(cowplot)
+library(rstan)
+library(sf)
 
 dpareto <- function(x, a = 0.9, b = 1) a * b^a / x^(a + 1)
 ppareto <- function(x, a = 0.9, b = 1) (x > b) * (1 - (b / x)^a)
@@ -32,9 +34,52 @@ inv_cumulative_freq <- function(cf) {
   rep(cf$area, c(cf$number[1], diff(cf$number)))
 }
 
+
+#' Read a config.py file in R
+#'
+#' @param file a file path
+#' @export
+#' @examples \dontrun{
+#' # See jsta/rjsta @ Github
+#' dir(config()$a)
+#' }
+config <- function(file = "config.py") {
+  res <- suppressWarnings(readLines(file))
+
+  # remove non equal sign lines
+  is_assignment <- as.logical(sapply(res, function(x) grep("=", x) >= 1))
+  is_assignment <- sapply(is_assignment,
+    function(x) ifelse(is.na(x), FALSE, TRUE))
+  res <- res[is_assignment]
+
+  res <- strsplit(res, " ")
+  keys <- unlist(lapply(res, function(x) x[[1]][[1]]))
+  values <- unlist(lapply(res, function(x) x[[3]][[1]]))
+  # keys <- unlist(lapply(res, function(x) strsplit(x, "=")[[1]][[1]]))
+  # values <- unlist(lapply(res, function(x) strsplit(x, "=")[[1]][[2]]))
+
+  res <- setNames(data.frame(t(values)), keys)
+
+  norm_file_path <- function(x) {
+    gsub('\\"', "", gsub("\\\\\\\\", "\\\\", x))
+  }
+
+  data.frame(t(apply(res, 2, norm_file_path)))
+}
+
+# read-in hydrolakes data
+data_path_hydrolakes <- config()$data_path_hydrolakes
+data_path_hydrolakes <- file.path(data_path_hydrolakes,
+  "HydroLAKES_polys_v10_shp", "HydroLAKES_polys_v10.shp")
+area_hydrolakes <- st_read(data_path_hydrolakes,
+  query = "SELECT Lake_area FROM \"HydroLAKES_polys_v10\"") %>%
+  st_drop_geometry()
+# y <- area_hydrolakes$Lake_area
+
 # simulate random pareto draws
+# unlink("data/y.rds")
 if (!file.exists("data/y.rds")) {
-  y <- rpareto(10000, max = 81935.7) # cap at the area of Lake Superior
+  y <- rpareto(140000, max = 81935.7) # cap at the area of Lake Superior
   saveRDS(y, "data/y.rds")
 }
 #
@@ -132,8 +177,6 @@ ggsave("manuscript/figures/frequentist_uncertainty-1.pdf",
 
 # ---- bayesian_model ----
 # https://github.com/stan-dev/example-models/blob/master/bugs_examples/vol3/fire/fire.stan
-
-library(rstan)
 
 # fit pareto to get alpha estimates
 pareto_model <-
