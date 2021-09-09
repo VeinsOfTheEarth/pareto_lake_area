@@ -127,8 +127,8 @@ stack_preds <- data.frame(preds = stack_preds,
 frequentist_uncertainty <- ggplot() +
   geom_line(data = stack_preds, aes(x = area, y = preds, color = type)) +
   scale_x_log10() + xlab("density") + labs(color = "Confidence \n Interval")
-ggsave("manuscript/figures/frequentist_uncertainty-1.pdf", frequentist_uncertainty,
-  width = 5.93, height = 2.33)
+ggsave("manuscript/figures/frequentist_uncertainty-1.pdf",
+  frequentist_uncertainty, width = 5.93, height = 2.33)
 
 # ---- bayesian_model ----
 # https://github.com/stan-dev/example-models/blob/master/bugs_examples/vol3/fire/fire.stan
@@ -178,7 +178,8 @@ if (!file.exists("data/alphas.rds")) {
 alphas <- readRDS("data/alphas.rds")
 
 conf_int <- quantile(alphas, probs = c(0.025, 0.5, .975))
-bayesian_model <- ggplot() + geom_histogram(data = data.frame(alpha = alphas), aes(x = alpha)) +
+bayesian_model <- ggplot() +
+  geom_histogram(data = data.frame(alpha = alphas), aes(x = alpha)) +
   geom_vline(aes(xintercept = conf_int[c(1, 3)]), color = "red") +
   geom_vline(aes(xintercept = conf_int[2])) +
   geom_vline(aes(xintercept = 0.9), linetype = 2)
@@ -192,7 +193,8 @@ if (!file.exists("data/area_bayes.rds")) {
   # back-out an estimate of total area
   area_bayes <- sapply(alphas, function(a) {
     cf_extra_bayes <- select(cf_extra, area)
-    cf_extra_bayes$density <- (log(cf_extra_bayes$area) * (a * -1)) + log(min(y_censored)) - 0.1
+    cf_extra_bayes$density <- (log(cf_extra_bayes$area) * (a * -1)) +
+      log(min(y_censored)) - 0.1
     cf_extra_bayes$type    <- "predicted_bayes"
     cf_extra_bayes$number  <- exp(cf_extra_bayes$density + max(log(cf$number)))
     res <- dplyr::bind_rows(cf_extra_bayes, cf)
@@ -207,7 +209,8 @@ if (!file.exists("data/area_bayes.rds")) {
 area_bayes <- readRDS("data/area_bayes.rds")
 
 conf_int <- quantile(area_bayes, probs = c(0.025, 0.5, .975))
-bayesian_area <- ggplot() + geom_histogram(data = data.frame(area = area_bayes), aes(x = area)) +
+bayesian_area <- ggplot() +
+  geom_histogram(data = data.frame(area = area_bayes), aes(x = area)) +
   geom_vline(aes(xintercept = conf_int[c(1, 3)]), color = "red") +
   geom_vline(aes(xintercept = conf_int[2])) +
   geom_vline(aes(xintercept = total_empirical), linetype = 2)
