@@ -79,7 +79,7 @@ area_hydrolakes <- st_read(data_path_hydrolakes,
 # simulate random pareto draws
 # unlink("data/y.rds")
 if (!file.exists("data/y.rds")) {
-  y <- rpareto(140000, max = 81935.7) # cap at the area of Lake Superior
+  y <- rpareto(153000, max = 81935.7) # cap at the area of Lake Superior
   saveRDS(y, "data/y.rds")
 }
 #
