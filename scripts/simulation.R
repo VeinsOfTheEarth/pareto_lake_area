@@ -128,13 +128,14 @@ y_censored <- y[log(y) > 1]
 # ---- recover_area ----
 
 # back out total "area" from individual binning
-test <- hist(log(y), plot = FALSE, n = 10000) %>%
+total_area <- hist(log(y), plot = FALSE, n = 10000) %>%
   {
     data.frame(x = .$breaks[-1], samples = log(.$counts))
   } %>%
   filter(samples > -Inf)
 
-sum(exp(test$x) * exp(test$samples))
+total_area <- sum(exp(total_area$x) * exp(total_area$samples))
+# print(total_area)
 
 # ---- predict_area ----
 # back out total "area" from cumulative frequency
