@@ -8,6 +8,7 @@ suppressMessages(library(rstan))
 suppressMessages(library(sf))
 # setwd("scripts")
 
+set.seed(234)
 options(mc.cores = parallel::detectCores())
 rstan_options(auto_write = TRUE)
 
@@ -89,34 +90,43 @@ if (!file.exists("../data/y.rds")) {
 #
 y <- readRDS("../data/y.rds")
 
-pareto_plot <- function(dt) {
-  plot_grid(
-    # individual binning
-    hist(log(dt), plot = FALSE, n = 100) %>%
-      {
-        data.frame(x = .$breaks[-1], samples = log(.$counts))
-      } %>%
-      ggplot() + geom_line(aes(x, samples)) +
-      theme_minimal(),
-    # log binning
-    # hist(y, plot = FALSE, breaks = 10^(seq(from = 0, to = 6, by = 0.6))) %>%
-    # {data.frame(x = .$breaks[-1], samples = .$counts + 0.01)} %>%
-    #   ggplot + geom_line(aes(x, samples)) +
-    #   theme_minimal() + scale_x_log10() + scale_y_log10(),
-    # cumulative binning
-    cumulative_freq(dt) %>%
-      ggplot() + geom_line(aes(area, number)) +
-      theme_minimal() + scale_x_log10() + scale_y_log10() +
-      ylab("samples with value > x") + xlab("x"),
-    nrow = 1)
+pareto_plot_prep <- function(x) {
+  individual_binning <- hist(log(x), plot = FALSE, n = 100) %>%  {
+    data.frame(x = .$breaks[-1], samples = log(.$counts))
+  }
+  cumulative_binning <- cumulative_freq(x)
+
+  list(individual_binning = individual_binning,
+    cumulative_binning = cumulative_binning)
 }
 
-# plot_grid(
-#   pareto_plot(y),
-#   pareto_plot(area_hydrolakes),
-#   nrow = 2, ncol = 1
-# )
-pareto_demo <- pareto_plot(y)
+pareto_plot <- function(individual_binning, cumulative_binning) {
+  gg_individual <- ggplot(data = individual_binning) +
+    geom_line(aes(x, samples, color = name)) +
+    theme_minimal() +
+    theme(legend.position = "none")
+
+  gg_cumulative <- ggplot(data = cumulative_binning) +
+    geom_line(aes(area, number, color = name)) +
+    theme_minimal() + scale_x_log10() + scale_y_log10() +
+    ylab("samples with value > x") + xlab("x") +
+    labs(color = "")
+
+  plot_grid(gg_individual, gg_cumulative,
+    nrow = 1, rel_widths = c(0.68, 1))
+}
+
+individual_binning <- rbind(
+  mutate(pareto_plot_prep(y)$individual_binning, name = "simulated"),
+  mutate(pareto_plot_prep(area_hydrolakes)$individual_binning,
+    name = "hydrolakes")
+)
+cumulative_binning <- rbind(
+  mutate(pareto_plot_prep(y)$cumulative_binning, name = "simulated"),
+  mutate(pareto_plot_prep(area_hydrolakes)$cumulative_binning,
+    name = "hydrolakes"))
+
+pareto_demo <- pareto_plot(individual_binning, cumulative_binning)
 
 ggsave("../manuscript/figures/pareto_demo-1.pdf", pareto_demo,
   width = 5.93, height = 2.33)
