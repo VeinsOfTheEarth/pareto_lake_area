@@ -55,7 +55,7 @@ pdfauthor={J.~Stachelek}
 \begin{abstract}
 	Size is a critical factor determining the rate and occurrence of specific lake processes such as carbon sequestration and greenhouse gas emissions. Because we do not have a complete census of all lakes, upscaling estimates of such processes at broad spatial scales requires the use of lake size-abundance distributions rather than empirical measurements of area. Existing lake census efforts are incomplete such that as lakes become smaller they are more likely to by omitted either because they are too small to be resolved from remote sensing products or because of limited ground surveying effort (i.e. "censoring" of small lakes relative to large lakes).
 
-The present study explores one potential shortcoming of prior approaches estimating global lake area using lake size-abundance distributions. Namely, these prior approaches rely on frequentist curve fitting techniques combined with an ad-hoc cutoff determination strategy (visual inspection to determine a likely censoring point). This yields an over-exact lake area estimate that is overwhelmingly reported with no uncertainty bounds. I address this shortcoming by fitting models in a Bayesian framework where each parameter contributes uncertainty to model estimates. I show that such although such models produce a more realistic estimate of lake area uncertainty they underestimate true total lake area. The degree of this underestimation is likely related to the proportion of the dataset subject to censoring. Ultimately, this may explain the fact that total lake area estimates have increased through time as the resolution of lake databases has improved.
+	The present study explores one potential shortcoming of prior approaches estimating global lake area using lake size-abundance distributions. Namely, these prior approaches rely on frequentist curve fitting techniques combined with an ad-hoc cutoff determination strategy (visual inspection to determine a likely censoring point). This yields an over-exact lake area estimate that is overwhelmingly reported with no uncertainty bounds. I address this shortcoming by fitting models in a Bayesian framework where each parameter contributes uncertainty to model estimates. I show that such although such models produce a more realistic estimate of lake area uncertainty they underestimate true total lake area. The degree of this underestimation is likely related to the proportion of the dataset subject to censoring. Ultimately, this may explain the fact that total lake area estimates have increased through time as the resolution of lake databases has improved.
 \end{abstract}
 
 \section{Introduction}
@@ -66,7 +66,7 @@ A consequence of these challenges is that uncertainty varies within the distribu
 
 Estimating total lake area from a sample of lakes requires a conceptual model of how lakes are formed (i.e. the data generating process). Typically, lake areas are treated as arising from a fractal generating process due to the fact that landform topography, which determines the placement of lakes, can itself be treated as a fractal generating process. Indeed, many other geomorphological phenomena that are dependent on landform topography such as coastline length are often well-described by fractal generating processes \citep{newman_power_2005}. A challenge in modelling such data generating processes for lake areas is that large lakes likely follow a different data generating process than that of the smallest lakes. Whereas small lakes are constrained by landform topography, large lakes are essentially unconstrained by local landform topography and are instead constrained by the placement and arrangement of continents \citep{goodchildLakesFractalSurfaces1988}. As large lakes become even larger, they have a greater probability of intersecting a continent edge and becoming an estuary or embayment rather than a lake. Consquently, lake databases are said to be truncated on large lakes because we know that large lakes are essentially fixed in space and cannot occur in any given location \citep{hamiltonEstimationFractalDimension1992}.
 
-From the preceding discussion it is clear that estimating total lake area requires a method of dealing both with the fact that lake databases are 1) truncated at large lakes and 2) censored at small lakes. Previous studies estimating global lake area have essentially not dealt with the first issue but instead modified their estimation process to limit its effect on the results (see methods section). They have dealt with the second issue by specifying an ad-hoc cutoff value below which empirically determined lake areas are discarded and subsequently back calculated. Hereafter, I refer to this strategy as the "cutoff" method. 
+From the preceding discussion it is clear that estimating total lake area requires a method of dealing both with the fact that lake databases are 1) truncated at large lakes and 2) censored at small lakes. Previous studies estimating global lake area have essentially not dealt with the first issue but instead modified their estimation process to limit its effect on the results (see methods section). They have dealt with the second issue by specifying an ad-hoc cutoff value below which empirically determined lake areas are discarded and subsequently back calculated. Hereafter, I refer to this strategy as the "cutoff" method.
 
 In the present study, I explore two different methods for calculating uncertainty bounds around global lake area. First, I calculate these bounds using a frequentist approach for estimating total lake area (i.e. the cutoff method) via a simulation study. Second, I compare these frequentist uncertainty bounds with those calculated using a Bayesian framework. I carry out these demonstrations using a simulated dataset so that the ability of each method to recover the "true" parameter values can be evaluated. The use of a simulated dataset has the further benefit of avoiding potential confounding factors such as heterogeneity of survey effort or unknown data precision.
 
@@ -75,15 +75,15 @@ In the present study, I explore two different methods for calculating uncertaint
 Lake areas are typically treated as arising from a scale-invariant fractal generating process \citep{winslowDoesLakeSize2015, downingGlobalAbundanceSize2006, mcdonald_regional_2012, goodchildLakesFractalSurfaces1988, hamiltonEstimationFractalDimension1992}. This means that the number of lakes in one size class is proportional to the number of lakes in the preceding size class irrespective of their magnitudes. The numerical form describing such a process is a power-law function. One of the statistical tools often used to model data that follow a power-law function is the Pareto distribution which has a probability density function (pdf) of:
 
 \begin{equation}
-    pdf(A) = \alpha x_{min}^{\alpha}A^{-(\alpha+1)} \\
-  \label{eqn:pareto_pdf}
+	pdf(A) = \alpha x_{min}^{\alpha}A^{-(\alpha+1)} \\
+	\label{eqn:pareto_pdf}
 \end{equation}
 
 where $A$ is lake area, $a$ controls the “shape” of the distribution and $x_{min}$ controls the “scale” of the distribution \citep{shaliziAdvancedDataAnalysis2017}. Lake area studies using the Pareto distribution do not typically use the pdf directly. Instead, they use the inverse (complementary) cumulative distribution function (ccdf) (i.e. quantile function):
 
 \begin{equation}
-    ccdf(A) = \frac{x_{min}}{(1-A)^{\frac{1}{\alpha}}}
-  \label{eqn:pareto_ccdf}
+	ccdf(A) = \frac{x_{min}}{(1-A)^{\frac{1}{\alpha}}}
+	\label{eqn:pareto_ccdf}
 \end{equation}
 
 The reason for using the ccdf is two-fold. First, it stabilizes model estimates in the lower tail of the distribution \citep{newman_power_2005}. This can be seen from the simulated data in Figure \ref{fig:pareto_demo} where the Pareto pdf contains a lot of noise in the tail but the ccdf appears smoothed. The smoothing of the tail is also desirable because it functions as a way of dealing with the truncated nature of lake databases (i.e. the area of large lakes is known exactly). The second reason for using the ccdf is that it provides a computational shortcut for estimating the Pareto shape parameter $a$ because it is numerically equivalent to the slope of the ccdf in log-log space \citep{downingGlobalAbundanceSize2006}.
@@ -100,7 +100,7 @@ For evaluation purposes, I generated a simulated dataset of 10,000 lake areas fo
 I estimated the Pareto shape parameter $a$ in a frequentist framework by calculating the the slope of the edf in log-log space using linear regression in \texttt{R} \citep{team2013r}. I evaluated uncertainty in both $a$ and total lake area in a Bayesian framework using Stan \citep{standevelopmentteamStanModelingLanguage2017}. Instead of computing on the edf (as in the frequentist case), I computed directly on the pdf with the following Stan model:
 
 \begin{minipage}[c]{0.95\textwidth}
-\begin{lstlisting}
+	\begin{lstlisting}
 data {
   int<lower=0> N;
   real x[N];
@@ -164,11 +164,11 @@ Instead of the essentially fixed $a$ and total lake area estimates produced by t
 	\caption{'True' total lake area from the uncensored edf and estimated lake area from a combination of the censored edf and the estimated cdf.}
 	\centering
 	\begin{tabular}{cc}
-	\toprule
+		\toprule
 		True Area ($km^2$) & Estimated Area ($km^2$) \\
-	\midrule
-		2.271e+05 & 2.263e+05 \\
-	\bottomrule
+		\midrule
+		2.271e+05          & 2.263e+05               \\
+		\bottomrule
 	\end{tabular}
 	\label{tab:pred_table}
 \end{table}
@@ -177,7 +177,7 @@ Instead of the essentially fixed $a$ and total lake area estimates produced by t
 
 I have shown that the typical frequentist cutoff method produces reasonable estimates of the density of small censored lakes but that it does not capture uncertainty in total lake area (Table \ref{tab:pred_table}, Figure \ref{fig:frequentist_uncertainty}). Furthermore, I have shown that models fit using a Bayesian approach indicate substantial uncertainty in both total lake area and the underlying Pareto shape parameter $a$ used to derive these estimates (Figure \ref{fig:bayesian_model}, \ref{fig:bayesian_area}).
 
-Although the 95\% credible interval of the Bayesian total lake area estimates encapsulate the true total lake area, the median value underestimates the true total lake area (Figure \ref{fig:bayesian_area}). It is likely that such underestimation, would increase with a greater proportion of censoring. This may explain the steady increase in estimates of global lake area through time from approximately 2.5 to 5 million $km^{2}$ as lake area databases have improved their accuracy \citep{lehnerDevelopmentValidationGlobal2004, downingGlobalAbundanceSize2006, verpoorterGlobalInventoryLakes2014}. Future work on estimating global lake area should consider implementing a sensitivity analysis looking at the response of total area estimates to variation in the degree of censoring.
+Although the 95\% credible interval of the Bayesian total lake area estimates encapsulate the true total lake area, the median value underestimates the true total lake area (Figure \ref{fig:bayesian_area}). It is likely that such underestimation, would increase with a greater proportion of censoring. This may explain the steady increase in estimates of global lake area through time from approximately 3 to 5 million $km^{2}$ as lake area databases have improved their accuracy \citep{lehnerDevelopmentValidationGlobal2004, downingGlobalAbundanceSize2006, verpoorterGlobalInventoryLakes2014}. Future work on estimating global lake area should consider implementing a sensitivity analysis looking at the response of total area estimates to variation in the degree of censoring.
 
 A caveat of the present study is that it is difficult to confirm whether or not any particular dataset follows a fractal generating or Pareto process without strong prior knowledge. Indeed data following many heavy-tailed distributions such as the lognormal or negative exponential can appear to be equivalent to power-law distributions such as the Pareto \citep{clausetPowerlawDistributionsEmpirical2009}. The results of the present study confirm that an apparent change in the shape of the lower tail of a lake area distribution does not necessarily indicate a change in the data generating process. Note that the simulation dataset analyzed herein \emph{is} a truly fractal generated dataset with a homogeneous data generating process yet a cursory look would seem to indicate a change of data-generating process in the lower tail (Figure \ref{fig:predict_area}).
 
