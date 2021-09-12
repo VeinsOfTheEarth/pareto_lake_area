@@ -1,11 +1,15 @@
 # ---- pareto_demo ----
 # setwd("scripts")
-library(dplyr)
+suppressMessages(library(dplyr))
 library(magrittr)
 library(ggplot2)
 library(cowplot)
-library(rstan)
-library(sf)
+suppressMessages(library(rstan))
+suppressMessages(library(sf))
+# setwd("scripts")
+
+options(mc.cores = parallel::detectCores())
+rstan_options(auto_write = TRUE)
 
 dpareto <- function(x, a = 0.9, b = 1) a * b^a / x^(a + 1)
 ppareto <- function(x, a = 0.9, b = 1) (x > b) * (1 - (b / x)^a)
@@ -68,43 +72,53 @@ config <- function(file = "config.py") {
 }
 
 # read-in hydrolakes data
-data_path_hydrolakes <- config()$data_path_hydrolakes
+data_path_hydrolakes <- config("../config.py")$data_path_hydrolakes
 data_path_hydrolakes <- file.path(data_path_hydrolakes,
   "HydroLAKES_polys_v10_shp", "HydroLAKES_polys_v10.shp")
 area_hydrolakes <- st_read(data_path_hydrolakes,
-  query = "SELECT Lake_area FROM \"HydroLAKES_polys_v10\"") %>%
+  query = "SELECT Lake_area FROM \"HydroLAKES_polys_v10\"", quiet = TRUE) %>%
   st_drop_geometry()
-# y <- area_hydrolakes$Lake_area
+area_hydrolakes <- area_hydrolakes$Lake_area
 
 # simulate random pareto draws
-# unlink("data/y.rds")
-if (!file.exists("data/y.rds")) {
+# unlink("../data/y.rds")
+if (!file.exists("../data/y.rds")) {
   y <- rpareto(153000, max = 81935.7) # cap at the area of Lake Superior
-  saveRDS(y, "data/y.rds")
+  saveRDS(y, "../data/y.rds")
 }
 #
-y <- readRDS("data/y.rds")
+y <- readRDS("../data/y.rds")
 
-pareto_demo <- plot_grid(
-  # individual binning
-  hist(log(y), plot = FALSE, n = 100) %>%
-    {
-      data.frame(x = .$breaks[-1], samples = log(.$counts))
-    } %>%
-    ggplot() + geom_line(aes(x, samples)) +
-    theme_minimal(),
-  # log binning
-  # hist(y, plot = FALSE, breaks = 10^(seq(from = 0, to = 6, by = 0.6))) %>%
-  # {data.frame(x = .$breaks[-1], samples = .$counts + 0.01)} %>%
-  #   ggplot + geom_line(aes(x, samples)) +
-  #   theme_minimal() + scale_x_log10() + scale_y_log10(),
-  # cumulative binning
-  cumulative_freq(y) %>%
-    ggplot() + geom_line(aes(area, number)) +
-    theme_minimal() + scale_x_log10() + scale_y_log10() +
-    ylab("samples with value > x") + xlab("x"),
-  nrow = 1)
-ggsave("manuscript/figures/pareto_demo-1.pdf", pareto_demo,
+pareto_plot <- function(dt) {
+  plot_grid(
+    # individual binning
+    hist(log(dt), plot = FALSE, n = 100) %>%
+      {
+        data.frame(x = .$breaks[-1], samples = log(.$counts))
+      } %>%
+      ggplot() + geom_line(aes(x, samples)) +
+      theme_minimal(),
+    # log binning
+    # hist(y, plot = FALSE, breaks = 10^(seq(from = 0, to = 6, by = 0.6))) %>%
+    # {data.frame(x = .$breaks[-1], samples = .$counts + 0.01)} %>%
+    #   ggplot + geom_line(aes(x, samples)) +
+    #   theme_minimal() + scale_x_log10() + scale_y_log10(),
+    # cumulative binning
+    cumulative_freq(dt) %>%
+      ggplot() + geom_line(aes(area, number)) +
+      theme_minimal() + scale_x_log10() + scale_y_log10() +
+      ylab("samples with value > x") + xlab("x"),
+    nrow = 1)
+}
+
+# plot_grid(
+#   pareto_plot(y),
+#   pareto_plot(area_hydrolakes),
+#   nrow = 2, ncol = 1
+# )
+pareto_demo <- pareto_plot(y)
+
+ggsave("../manuscript/figures/pareto_demo-1.pdf", pareto_demo,
   width = 5.93, height = 2.33)
 
 # remove lakes below censor threshold ####
@@ -151,7 +165,7 @@ res         <- dplyr::bind_rows(cf_extra, cf)
 predict_area <- ggplot(data = res) +
   geom_line(aes(x = area, y = density, linetype = type)) +
   scale_x_log10() + theme(legend.title = element_blank())
-ggsave("manuscript/figures/predict_area-1.pdf", predict_area,
+ggsave("../manuscript/figures/predict_area-1.pdf", predict_area,
   width = 4.28, height = 2.33)
 
 # back-out an estimate of total area
@@ -172,7 +186,7 @@ stack_preds <- data.frame(preds = stack_preds,
 frequentist_uncertainty <- ggplot() +
   geom_line(data = stack_preds, aes(x = area, y = preds, color = type)) +
   scale_x_log10() + xlab("density") + labs(color = "Confidence \n Interval")
-ggsave("manuscript/figures/frequentist_uncertainty-1.pdf",
+ggsave("../manuscript/figures/frequentist_uncertainty-1.pdf",
   frequentist_uncertainty, width = 5.93, height = 2.33)
 
 # ---- bayesian_model ----
@@ -203,22 +217,22 @@ model {
 }
 "
 
-if (!file.exists("data/pareto_bayes.rds")) {
+if (!file.exists("../data/pareto_bayes.rds")) {
   fit <- stan(model_code = pareto_model,
     data = list(N = length(y_censored), x = y_censored),
     iter = 8000)
 
   # print(fit)
   # plot(fit, pars = "alpha")
-  saveRDS(fit, "data/pareto_bayes.rds")
+  saveRDS(fit, "../data/pareto_bayes.rds")
 }
-fit <- readRDS("data/pareto_bayes.rds")
+fit <- readRDS("../data/pareto_bayes.rds")
 
-if (!file.exists("data/alphas.rds")) {
+if (!file.exists("../data/alphas.rds")) {
   alphas <- tidybayes::spread_samples(fit, alpha)$alpha
-  saveRDS(alphas, "data/alphas.rds")
+  saveRDS(alphas, "../data/alphas.rds")
 }
-alphas <- readRDS("data/alphas.rds")
+alphas <- readRDS("../data/alphas.rds")
 
 conf_int <- quantile(alphas, probs = c(0.025, 0.5, .975))
 bayesian_model <- ggplot() +
@@ -226,12 +240,12 @@ bayesian_model <- ggplot() +
   geom_vline(aes(xintercept = conf_int[c(1, 3)]), color = "red") +
   geom_vline(aes(xintercept = conf_int[2])) +
   geom_vline(aes(xintercept = 0.9), linetype = 2)
-ggsave("manuscript/figures/bayesian_model-1.pdf", bayesian_model,
+ggsave("../manuscript/figures/bayesian_model-1.pdf", bayesian_model,
   width = 4.43, height = 2.33)
 
 # ---- bayesian_area ----
 
-if (!file.exists("data/area_bayes.rds")) {
+if (!file.exists("../data/area_bayes.rds")) {
   # find estimated density of censored lakes given alpha
   # back-out an estimate of total area
   area_bayes <- sapply(alphas, function(a) {
@@ -247,9 +261,9 @@ if (!file.exists("data/area_bayes.rds")) {
 
   })
 
-  saveRDS(area_bayes, "data/area_bayes.rds")
+  saveRDS(area_bayes, "../data/area_bayes.rds")
 }
-area_bayes <- readRDS("data/area_bayes.rds")
+area_bayes <- readRDS("../data/area_bayes.rds")
 
 conf_int <- quantile(area_bayes, probs = c(0.025, 0.5, .975))
 bayesian_area <- ggplot() +
@@ -257,7 +271,7 @@ bayesian_area <- ggplot() +
   geom_vline(aes(xintercept = conf_int[c(1, 3)]), color = "red") +
   geom_vline(aes(xintercept = conf_int[2])) +
   geom_vline(aes(xintercept = total_empirical), linetype = 2)
-ggsave("manuscript/figures/bayesian_area-1.pdf", bayesian_area,
+ggsave("../manuscript/figures/bayesian_area-1.pdf", bayesian_area,
   width = 4.36, height = 2.33)
 
 # ggplot(data = res) +
