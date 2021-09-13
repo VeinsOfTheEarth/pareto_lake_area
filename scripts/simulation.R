@@ -184,11 +184,11 @@ ggsave("../manuscript/figures/predict_area-1.pdf", predict_area,
 total_predicted <- sum(inv_cumulative_freq(res))
 
 # ---- frequentist_uncertainty ----
-stack_preds <- c(res$density[1:nrow(cf_extra)],
-  res$lower[1:nrow(cf_extra)],
-  res$upper[1:nrow(cf_extra)])
+stack_preds <- c(res$density[seq_len(nrow(cf_extra))],
+  res$lower[seq_len(nrow(cf_extra))],
+  res$upper[seq_len(nrow(cf_extra))])
 stack_preds <- data.frame(preds = stack_preds,
-  area  = rep(res$area[1:nrow(cf_extra)], times = 3),
+  area  = rep(res$area[seq_len(nrow(cf_extra))], times = 3),
   type  = rep(c("50", "2.5", "97.5"),
     each = nrow(cf_extra)))
 # res$number_lower[(nrow(cf_extra) + 1):nrow(res)] <-
