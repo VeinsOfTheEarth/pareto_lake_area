@@ -24,7 +24,11 @@ manuscript/figures/%.pdf: scripts/simulation.R
 
 manuscript: manuscript/manuscript.pdf
 
-manuscript/manuscript.%: manuscript/manuscript.tex manuscript/pareto-lakes.bib
+manuscript/manuscript.pdf: manuscript/manuscript.tex manuscript/pareto-lakes.bib
+	cd manuscript && pdflatex manuscript.tex
+	cd manuscript && bibtex manuscript
+
+manuscript/manuscript.bbl: manuscript/manuscript.tex manuscript/pareto-lakes.bib
 	cd manuscript && pdflatex manuscript.tex
 	cd manuscript && bibtex manuscript
 
@@ -32,3 +36,4 @@ clean:
 	-rm -rf figures
 	-rm arxiv_submission.zip
 	-rm manuscript/manuscript.bbl
+	-rm data/pareto_bayes.rds data/alphas.rds data/area_bayes.rds
