@@ -6,6 +6,7 @@ library(ggplot2)
 library(cowplot)
 suppressMessages(library(rstan))
 suppressMessages(library(sf))
+library(tidybayes)
 # setwd("scripts")
 
 set.seed(234)
@@ -228,10 +229,12 @@ model {
 }
 "
 
+# unlink("../data/pareto_bayes.rds"); unlink("../data/alphas.rds"); unlink("../data/area_bayes.rds")
+
 if (!file.exists("../data/pareto_bayes.rds")) {
   fit <- stan(model_code = pareto_model,
     data = list(N = length(y_censored), x = y_censored),
-    iter = 8000)
+    iter = 15000)
 
   # print(fit)
   # plot(fit, pars = "alpha")
@@ -240,7 +243,7 @@ if (!file.exists("../data/pareto_bayes.rds")) {
 fit <- readRDS("../data/pareto_bayes.rds")
 
 if (!file.exists("../data/alphas.rds")) {
-  alphas <- tidybayes::spread_samples(fit, alpha)$alpha
+  alphas <- tidybayes::spread_draws(fit, alpha)$alpha
   saveRDS(alphas, "../data/alphas.rds")
 }
 alphas <- readRDS("../data/alphas.rds")
@@ -250,7 +253,10 @@ bayesian_model <- ggplot() +
   geom_histogram(data = data.frame(alpha = alphas), aes(x = alpha)) +
   geom_vline(aes(xintercept = conf_int[c(1, 3)]), color = "red") +
   geom_vline(aes(xintercept = conf_int[2])) +
-  geom_vline(aes(xintercept = 0.9), linetype = 2)
+  geom_vline(aes(xintercept = 0.9), linetype = 2) +
+  xlim(
+    conf_int[2] - ((conf_int[2] - conf_int[1]) * 3),
+    conf_int[2] + ((conf_int[3] - conf_int[2]) * 3))
 ggsave("../manuscript/figures/bayesian_model-1.pdf", bayesian_model,
   width = 4.43, height = 2.33)
 
@@ -281,7 +287,9 @@ bayesian_area <- ggplot() +
   geom_histogram(data = data.frame(area = area_bayes), aes(x = area)) +
   geom_vline(aes(xintercept = conf_int[c(1, 3)]), color = "red") +
   geom_vline(aes(xintercept = conf_int[2])) +
-  geom_vline(aes(xintercept = total_empirical), linetype = 2)
+  geom_vline(aes(xintercept = total_empirical), linetype = 2) +
+  xlim(conf_int[2] - ((conf_int[2] - conf_int[1]) * 2), total_empirical
+  )
 ggsave("../manuscript/figures/bayesian_area-1.pdf", bayesian_area,
   width = 4.36, height = 2.33)
 
