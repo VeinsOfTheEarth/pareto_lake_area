@@ -92,6 +92,7 @@ if (!file.exists("../data/y.rds")) {
 y <- readRDS("../data/y.rds")
 
 pareto_plot_prep <- function(x) {
+  # x <- y
   individual_binning <- hist(log(x), plot = FALSE, n = 100) %>%  {
     data.frame(x = .$breaks[-1], samples = log(.$counts))
   }
@@ -104,13 +105,14 @@ pareto_plot_prep <- function(x) {
 pareto_plot <- function(individual_binning, cumulative_binning) {
   gg_individual <- ggplot(data = individual_binning) +
     geom_line(aes(x, samples, color = name)) +
+    ylab("log(n)") + xlab("log(area)") +
     theme_minimal() +
     theme(legend.position = "none")
 
   gg_cumulative <- ggplot(data = cumulative_binning) +
     geom_line(aes(area, number, color = name)) +
     theme_minimal() + scale_x_log10() + scale_y_log10() +
-    ylab("samples with value > x") + xlab("x") +
+    ylab("n > area") + xlab("area") +
     labs(color = "")
 
   plot_grid(gg_individual, gg_cumulative,
