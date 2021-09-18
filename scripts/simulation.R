@@ -156,11 +156,16 @@ total_empirical <- sum(inv_cumulative_freq(cumulative_freq(y)))
 
 # estimate pareto slope using log-log method
 cf         <- cumulative_freq(y_censored)
-cf$density <- log(cf$number) - max(log(cf$number))
+cf$density <- rev(log(max(cf$number) - cf$number + 1))
+# range(cf$density)
 cf$type    <- "empirical"
-fit_lm     <- lm(density ~ log(area), data = cf)
+# ggplot(data = cf) +
+#   geom_line(aes(x = area, y = density, linetype = type)) +
+#   scale_x_log10() + theme(legend.title = element_blank())
+
 
 # extrapolate censored lake counts
+fit_lm     <- lm(density ~ log(area), data = cf)
 cf_extra <- data.frame(area = exp(seq(
   from = min(log(y)),
   to   = min(log(y_censored)),
@@ -170,13 +175,19 @@ preds <- data.frame(predict(fit_lm, cf_extra, interval = "confidence"))
 preds <- setNames(preds, c("density", "lower", "upper"))
 cf_extra <- cbind(cf_extra, preds)
 cf_extra$type    <- "predicted"
-cf_extra$number  <- exp(cf_extra$density + max(log(cf$number)))
+cf_extra$number <- exp(cf_extra$density) + log(max(cf$number))
 cf_extra$number_lower  <- exp(cf_extra$lower + max(log(cf$number)))
 cf_extra$number_upper  <- exp(cf_extra$upper + max(log(cf$number)))
 
 res         <- dplyr::bind_rows(cf_extra, cf)
 
-predict_area <- ggplot(data = res) +
+predict_number <- ggplot(data = res) +
+  geom_line(aes(area, number, linetype = type)) +
+  theme_minimal() + scale_x_log10() + scale_y_log10() +
+  ylab("n > area") + xlab("area")
+
+predict_area <-
+  ggplot(data = res) +
   geom_line(aes(x = area, y = density, linetype = type)) +
   scale_x_log10() + theme(legend.title = element_blank())
 ggsave("../manuscript/figures/predict_area-1.pdf", predict_area,
