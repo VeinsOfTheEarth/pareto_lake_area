@@ -215,7 +215,9 @@ ggsave("../manuscript/figures/frequentist_uncertainty-1.pdf",
   frequentist_uncertainty, width = 5.93, height = 2.33)
 
 # ---- bayesian_model ----
+# nolint start
 # https://github.com/stan-dev/example-models/blob/master/bugs_examples/vol3/fire/fire.stan
+# nolint end
 
 # fit pareto to get alpha estimates
 pareto_model <-
@@ -242,7 +244,9 @@ model {
 }
 "
 
+# nolint start
 # unlink("../data/pareto_bayes.rds"); unlink("../data/alphas.rds"); unlink("../data/area_bayes.rds")
+# nolint end
 
 if (!file.exists("../data/pareto_bayes.rds")) {
   fit <- stan(model_code = pareto_model,
