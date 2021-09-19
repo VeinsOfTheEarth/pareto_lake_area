@@ -23,6 +23,12 @@ rpareto <- function(n, a = 0.9, b = 1, max = Inf) {
   res
 }
 
+individual_freq <- function(x) {
+  hist(log(x), plot = FALSE, n = 100) %>%  {
+    data.frame(x = .$breaks[-1], samples = log(.$counts))
+  }
+}
+
 #' (dt <- sample(1:10, 12, replace = TRUE) %>% .[order(.)])
 #' (cf <- cumulative_freq(dt))
 cumulative_freq <- function(x) {
