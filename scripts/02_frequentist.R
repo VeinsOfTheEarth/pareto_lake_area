@@ -1,8 +1,7 @@
-# setwd("scripts")
-source("utils.R")
+source("scripts/utils.R")
 
-res <- readRDS("../data/res.rds")
-cf_extra <- readRDS("../data/cf_extra.rds")
+res <- readRDS("data/res.rds")
+cf_extra <- readRDS("data/cf_extra.rds")
 
 # ---- frequentist_uncertainty ----
 stack_preds <- c(res$density[seq_len(nrow(cf_extra))],
@@ -19,5 +18,6 @@ stack_preds <- data.frame(preds = stack_preds,
 frequentist_uncertainty <- ggplot() +
   geom_line(data = stack_preds, aes(x = area, y = preds, color = type)) +
   scale_x_log10() + xlab("density") + labs(color = "Confidence \n Interval")
-ggsave("../manuscript/figures/frequentist_uncertainty-1.pdf",
+
+ggsave("manuscript/figures/frequentist_uncertainty-1.pdf",
   frequentist_uncertainty, width = 5.93, height = 2.33)

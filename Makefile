@@ -14,11 +14,11 @@ manuscript/manuscript.bbl
 	rm -rf figures
 
 
-# manuscript/figures/frequentist_uncertainty-1.pdf \
 # manuscript/figures/bayesian_model-1.pdf \
 # manuscript/figures/bayesian_area-1.pdf
 figures: manuscript/figures/pareto_demo-1.pdf \
-manuscript/figures/predict_censor-1.pdf
+manuscript/figures/predict_censor-1.pdf \
+manuscript/figures/frequentist_uncertainty-1.pdf
 
 
 manuscript/figures/pareto_demo-1.pdf: scripts/00_simulation.R
@@ -27,8 +27,8 @@ manuscript/figures/pareto_demo-1.pdf: scripts/00_simulation.R
 manuscript/figures/predict_censor-1.pdf: scripts/01_censoring.R
 	Rscript $<
 
-manuscript/figures/%.pdf: scripts/simulation.R
-	cd scripts && Rscript ../$<
+manuscript/figures/frequentist_uncertainty-1.pdf: scripts/02_frequentist.R
+	Rscript $<
 
 manuscript: manuscript/manuscript.pdf
 
