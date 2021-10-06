@@ -1,10 +1,10 @@
-# setwd("scripts")
-source("utils.R")
+source("scripts/utils.R")
 options(mc.cores = parallel::detectCores())
 rstan_options(auto_write = TRUE)
 
-y_censored <- readRDS("../data/y_censored.rds")
-cf_extra <- readRDS("../data/cf_extra.rds")
+y_censored <- readRDS("data/y_censored.rds")
+cf_extra <- readRDS("data/cf_extra.rds")
+cf <- readRDS("data/cf.rds")
 
 # ---- bayesian_model ----
 # nolint start
@@ -40,22 +40,22 @@ model {
 # unlink("../data/pareto_bayes.rds"); unlink("../data/alphas.rds"); unlink("../data/area_bayes.rds")
 # nolint end
 
-if (!file.exists("../data/pareto_bayes.rds")) {
+if (!file.exists("data/pareto_bayes.rds")) {
   fit <- stan(model_code = pareto_model,
     data = list(N = length(y_censored), x = y_censored),
     iter = 15000)
 
   # print(fit)
   # plot(fit, pars = "alpha")
-  saveRDS(fit, "../data/pareto_bayes.rds")
+  saveRDS(fit, "data/pareto_bayes.rds")
 }
-fit <- readRDS("../data/pareto_bayes.rds")
+fit <- readRDS("data/pareto_bayes.rds")
 
-if (!file.exists("../data/alphas.rds")) {
+if (!file.exists("data/alphas.rds")) {
   alphas <- tidybayes::spread_draws(fit, alpha)$alpha
-  saveRDS(alphas, "../data/alphas.rds")
+  saveRDS(alphas, "data/alphas.rds")
 }
-alphas <- readRDS("../data/alphas.rds")
+alphas <- readRDS("data/alphas.rds")
 
 conf_int <- quantile(alphas, probs = c(0.025, 0.5, .975))
 bayesian_model <- ggplot() +
@@ -66,12 +66,19 @@ bayesian_model <- ggplot() +
   xlim(
     conf_int[2] - ((conf_int[2] - conf_int[1]) * 3),
     conf_int[2] + ((conf_int[3] - conf_int[2]) * 3))
-ggsave("../manuscript/figures/bayesian_model-1.pdf", bayesian_model,
+ggsave("manuscript/figures/bayesian_model-1.pdf", bayesian_model,
   width = 4.43, height = 2.33)
 
 # ---- bayesian_area ----
 
-if (!file.exists("../data/area_bayes.rds")) {
+# TODO: the below calculations are probably incorrect
+
+# back out total "area" from cumulative frequency
+y_raw <- readRDS("data/y.rds")$y_raw
+total_empirical <- sum(inv_cumulative_freq(cumulative_freq(y_raw)))
+# print(total_empirical)
+
+if (!file.exists("data/area_bayes.rds")) {
   # find estimated density of censored lakes given alpha
   # back-out an estimate of total area
   area_bayes <- sapply(alphas, function(a) {
@@ -87,9 +94,9 @@ if (!file.exists("../data/area_bayes.rds")) {
 
   })
 
-  saveRDS(area_bayes, "../data/area_bayes.rds")
+  saveRDS(area_bayes, "data/area_bayes.rds")
 }
-area_bayes <- readRDS("../data/area_bayes.rds")
+area_bayes <- readRDS("data/area_bayes.rds")
 
 conf_int <- quantile(area_bayes, probs = c(0.025, 0.5, .975))
 bayesian_area <- ggplot() +
@@ -99,7 +106,7 @@ bayesian_area <- ggplot() +
   geom_vline(aes(xintercept = total_empirical), linetype = 2) +
   xlim(conf_int[2] - ((conf_int[2] - conf_int[1]) * 2), total_empirical
   )
-ggsave("../manuscript/figures/bayesian_area-1.pdf", bayesian_area,
+ggsave("manuscript/figures/bayesian_area-1.pdf", bayesian_area,
   width = 4.36, height = 2.33)
 
 # ggplot(data = res) +
