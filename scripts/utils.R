@@ -7,6 +7,7 @@ library(cowplot)
 suppressMessages(library(rstan))
 suppressMessages(library(sf))
 library(tidybayes)
+library(rstan)
 
 # functions ----
 
