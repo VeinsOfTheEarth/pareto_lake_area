@@ -105,7 +105,9 @@ bayesian_area <- ggplot() +
   geom_vline(aes(xintercept = conf_int[c(1, 3)]), color = "red") +
   geom_vline(aes(xintercept = conf_int[2])) +
   geom_vline(aes(xintercept = total_empirical), linetype = 2) +
-  xlim(conf_int[2] - ((conf_int[2] - conf_int[1]) * 2), total_empirical
+  xlim(
+  conf_int[2] - ((conf_int[2] - conf_int[1]) * 2),
+  conf_int[3] + ((conf_int[3] - conf_int[2]) * 2)
   )
 ggsave("manuscript/figures/bayesian_area-1.pdf", bayesian_area,
   width = 4.36, height = 2.33)
