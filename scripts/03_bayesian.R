@@ -82,6 +82,7 @@ if (!file.exists("data/area_bayes.rds")) {
   # find estimated density of censored lakes given alpha
   # back-out an estimate of total area
   area_bayes <- sapply(alphas, function(a) {
+    # a <- alphas[1]
     cf_extra_bayes <- select(cf_extra, area)
     cf_extra_bayes$density <- (log(cf_extra_bayes$area) * (a * -1)) +
       log(min(y_censored)) - 0.1

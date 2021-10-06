@@ -10,6 +10,7 @@ y_censored_raw <- y_raw[log(y_raw) > 1]
 y_censored_cumulative <- mutate(
   cumulative_freq(y_censored_raw), name = "censored")
 y_censored_individual <- individual_freq(y_censored_raw)
+saveRDS(y_censored_raw, "data/y_censored.rds")
 
 #  compare hydrolakes and y_censored_cumulative
 hydrolakes <- readRDS("data/hydrolakes.rds")
