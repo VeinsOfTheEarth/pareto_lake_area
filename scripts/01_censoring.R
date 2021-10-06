@@ -80,6 +80,7 @@ res <- dplyr::bind_rows(cf_extra, cf) %>%
 
 saveRDS(res, "data/res.rds")
 saveRDS(cf_extra, "data/cf_extra.rds")
+saveRDS(cf, "data/cf.rds")
 
 # compare hydrolakes and censored predictions
 hydrolakes <- readRDS("data/hydrolakes.rds")
