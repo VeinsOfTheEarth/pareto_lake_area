@@ -22,7 +22,7 @@
 \title{Quantifying uncertainty in Pareto estimates of global lake area}
 
 %\date{September 9, 1985}	% Here you can change the date presented in the paper title
-%\date{} 					% Or removing it
+\date{} 					% Or removing it
 
 \author{ \href{https://orcid.org/0000-0002-5924-2464}{\includegraphics[scale=0.06]{orcid.pdf}\hspace{1mm}J.~Stachelek} \\
 	Earth System Observations\\
@@ -127,7 +127,7 @@ I used uninformative gamma priors for both the $x_{min}$ and $a$ parameters foll
 
 \section{Results}
 
-Visual inspection of the frequentist method of computing on the edf appeared to produce a reasonable density estimate for small censored lakes (Figure \ref{fig:predict_area}). In addition, estimates of total lake area are somewhat close to the "true" value (Table \ref{tab:pred_table}). However, uncertainty around the frequentist estimates is unrealistically small (Figure \ref{fig:frequentist_uncertainty}).
+Visual inspection of the frequentist method of computing on the edf appeared to produce a reasonable density estimate for small censored lakes (Figure \ref{fig:predict_area}). In addition, estimates of total lake area are somewhat close to the "true" value (Table \ref{tab:pred_table}). However, uncertainty around the frequentist estimates is unrealistically small (Figure \ref{tab:frequentist_uncertainty}).
 
 \begin{figure}
 	\centering
@@ -136,12 +136,24 @@ Visual inspection of the frequentist method of computing on the edf appeared to 
 	\label{fig:predict_censor}
 \end{figure}
 
-\begin{figure}
+% \begin{figure}
+% 	\centering
+% 	\includegraphics{figures/frequentist_uncertainty-1}
+% 	\caption{Confidence interval of frequentist density predictions for censored data (the dashed portion in Figure 2. The confidence interval here has essentially no width.}
+% 	\label{tab:frequentist_uncertainty}
+% \end{figure}
+\begin{table}
+	\caption{Frequentist uncertainty}
 	\centering
-	\includegraphics{figures/frequentist_uncertainty-1}
-	\caption{Confidence interval of frequentist density predictions for censored data (the dashed portion in Figure 2. The confidence interval here has essentially no width.}
-	\label{fig:frequentist_uncertainty}
-\end{figure}
+	\begin{tabular}{ccc}
+		\toprule
+		Q5 ($km^2$) & Q50 ($km^2$) & Q95 ($km^2$) \\
+		\midrule
+		2.271e+05          & 2.263e+05   & 123     \\
+		\bottomrule
+	\end{tabular}
+	\label{tab:frequentist_uncertainty}
+\end{table}
 
 \begin{figure}
 	\centering
@@ -174,7 +186,7 @@ Instead of the essentially fixed $a$ and total lake area estimates produced by t
 
 \section{Discussion}
 
-I have shown that the typical frequentist cutoff method produces reasonable estimates of the density of small censored lakes but that it does not capture uncertainty in total lake area (Table \ref{tab:pred_table}, Figure \ref{fig:frequentist_uncertainty}). Furthermore, I have shown that models fit using a Bayesian approach indicate substantial uncertainty in both total lake area and the underlying Pareto shape parameter $a$ used to derive these estimates (Figure \ref{fig:bayesian_model}, \ref{fig:bayesian_area}).
+I have shown that the typical frequentist cutoff method produces reasonable estimates of the density of small censored lakes but that it does not capture uncertainty in total lake area (Table \ref{tab:pred_table}, Figure \ref{tab:frequentist_uncertainty}). Furthermore, I have shown that models fit using a Bayesian approach indicate substantial uncertainty in both total lake area and the underlying Pareto shape parameter $a$ used to derive these estimates (Figure \ref{fig:bayesian_model}, \ref{fig:bayesian_area}).
 
 Although the 95\% credible interval of the Bayesian total lake area estimates encapsulate the true total lake area, the median value underestimates the true total lake area (Figure \ref{fig:bayesian_area}). It is likely that such underestimation, would increase with a greater proportion of censoring. This may explain the steady increase in estimates of global lake area through time from approximately 3 to 5 million $km^{2}$ as lake area databases have improved their accuracy \citep{lehnerDevelopmentValidationGlobal2004, downingGlobalAbundanceSize2006, verpoorterGlobalInventoryLakes2014}. Future work on estimating global lake area should consider implementing a sensitivity analysis looking at the response of total area estimates to variation in the degree of censoring.
 
