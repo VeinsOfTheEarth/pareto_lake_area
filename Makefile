@@ -24,7 +24,7 @@ manuscript/figures/bayesian_area-1.pdf
 manuscript/figures/pareto_demo-1.pdf: scripts/00_simulation.R
 	Rscript $<
 
-manuscript/figures/predict_censor-1.pdf: scripts/01_censoring.R
+manuscript/figures/predict_censor-1.pdf: scripts/01_censoring.R manuscript/figures/pareto_demo-1.pdf
 	Rscript $<
 
 manuscript/figures/frequentist_uncertainty-1.pdf: scripts/02_frequentist.R
@@ -45,6 +45,8 @@ manuscript/manuscript.bbl: manuscript/manuscript.tex manuscript/pareto-lakes.bib
 
 clean:
 	-rm -rf manuscript/figures
+	-mkdir manuscript\\figures
+	-mkdir -p manuscript/figures
 	-rm arxiv_submission.zip
 	-rm manuscript/manuscript.bbl
 	-rm data/y.rds data/hydrolakes.rds \
