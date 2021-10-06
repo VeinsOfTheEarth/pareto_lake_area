@@ -2,7 +2,7 @@
 
 Code and data for:
 
-## Quantifying uncertainty in Pareto lake area estimates
+## Quantifying uncertainty in Pareto estimates of global lake area
 
 ### Products
 
