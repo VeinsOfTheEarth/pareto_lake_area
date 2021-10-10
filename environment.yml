@@ -1,0 +1,8 @@
+name: paretolakes3
+channels:
+- conda-forge
+dependencies:
+        - r-essentials
+        - r-base
+        - r-rstan
+        - r-sf
