@@ -1,6 +1,7 @@
 .PHONY: figures manuscript all
 
-all: figures manuscript arxiv_submission.zip
+# arxiv_submission.zip
+all: figures manuscript 
 
 arxiv_submission.zip: manuscript/manuscript.tex \
 manuscript/jsta.bst \
@@ -42,6 +43,7 @@ manuscript/manuscript.pdf: manuscript/manuscript.tex manuscript/pareto-lakes.bib
 manuscript/manuscript.bbl: manuscript/manuscript.tex manuscript/pareto-lakes.bib
 	cd manuscript && pdflatex manuscript.tex
 	cd manuscript && bibtex manuscript
+	cd manuscript && pdflatex manuscript.tex
 
 clean:
 	-rm -rf manuscript/figures
