@@ -1,8 +1,7 @@
-name: paretolakes3
+name: paretolakes
 channels:
 - conda-forge
-dependencies:
-        - r-essentials
-        - r-base
+dependencies:        
         - r-rstan
         - r-sf
+        - r-codetools
