@@ -44,6 +44,7 @@ if (!file.exists("data/pareto_bayes.rds")) {
   fit <- stan(model_code = pareto_model,
     data = list(N = length(y_censored), x = y_censored),
     iter = 25000)
+    control = list(adapt_delta = 0.9))
 
   # print(fit)
   # plot(fit, pars = "alpha")
