@@ -9,3 +9,11 @@ Code and data for:
 Manuscript: [manuscript/manuscript.pdf](manuscript/manuscript.pdf)
 
 <!--- [Notes Scratch-pad](https://docs.google.com/document/d/1ks71d9FZYyjgkdFlzzFcGP2AVxJ-hFSeCDLOytpufoc/edit?usp=sharing) --->
+
+### Reproducibility
+
+```shell
+conda create -f environment.yml
+source activate paretolakes
+Rscript -e "install.packages(c('tidybayes', 'cowplot'))"
+```
