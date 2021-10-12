@@ -40,12 +40,18 @@ model {
 # unlink("../data/pareto_bayes.rds"); unlink("../data/alphas.rds"); unlink("../data/area_bayes.rds")
 # nolint end
 
+
 if (!file.exists("data/pareto_bayes.rds")) {
+  alpha_inits <- 0.9
+  init_f <- function() {
+    list(alpha = alpha_inits);
+  }
+
   fit <- stan(model_code = pareto_model,
     data = list(N = length(y_censored), x = y_censored),
     iter = 25000,
     control = list(adapt_delta = 0.9),
-    init = list(alpha = list(rep(0.9, 4))))
+    init = init_f)
 
   # print(fit)
   # plot(fit, pars = "alpha")
