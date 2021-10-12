@@ -47,9 +47,8 @@ manuscript/manuscript.bbl: manuscript/manuscript.tex manuscript/pareto-lakes.bib
 
 clean:
 	-rm -rf manuscript/figures
-	-mkdir manuscript\\figures
+	-mkdir manuscript/figures
 	-mkdir -p manuscript/figures
 	-rm arxiv_submission.zip
 	-rm manuscript/manuscript.bbl
-	-rm data/y.rds data/hydrolakes.rds \
-		data/pareto_bayes.rds data/alphas.rds data/area_bayes.rds 
+	-rm data/pareto_bayes.rds data/alphas.rds data/area_bayes.rds 
