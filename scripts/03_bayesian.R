@@ -25,8 +25,8 @@ parameters {
 model {
   real lpa[N];
 
-  theta ~ gamma(.001, .001);
-  alpha ~ gamma(.001, .001);
+  theta ~ gamma(1, 3);
+  alpha ~ gamma(1, 3);
 
   for (i in 1:N) {
     lpa[i] = pareto_lpdf(x[i] | theta, alpha);
@@ -44,7 +44,8 @@ if (!file.exists("data/pareto_bayes.rds")) {
   fit <- stan(model_code = pareto_model,
     data = list(N = length(y_censored), x = y_censored),
     iter = 25000,
-    control = list(adapt_delta = 0.9))
+    control = list(adapt_delta = 0.9),
+    init = list(alpha = list(rep(0.9, 4))))
 
   # print(fit)
   # plot(fit, pars = "alpha")
