@@ -4,6 +4,8 @@ output:
   pdf_document:
     fig_caption: yes
     keep_tex: yes
+header-includes: |
+  \pagenumbering{gobble}
 ---
 
 ```{r setup, include=FALSE}
@@ -16,20 +18,18 @@ knitr::opts_chunk$set(echo = TRUE, fig.path = "../figures/", fig.width = 5, fig.
 knitr::include_graphics("../manuscript/figures/pareto_demo-1.pdf")
 ```
 
-```{r fig.cap="Realization of a Pareto (A) probability density function and (B) complementary cumulative distribution function.", echo=FALSE, fig.width=1,out.height="4in"}
-knitr::include_graphics("../manuscript/figures/pareto_demo-1.pdf")
+```{r fig.cap="Censored lake area edf (solid line) and cdf estimate (dashed line).", echo=FALSE, fig.width=1,out.height="4in"}
+knitr::include_graphics("../manuscript/figures/predict_censor-1.pdf")
 ```
 
-
-
-```{r fig.cap="Realization of a Pareto (A) probability density function and (B) complementary cumulative distribution function.", echo=FALSE, fig.width=1,out.height="4in"}
-knitr::include_graphics("../manuscript/figures/pareto_demo-1.pdf")
+```{r fig.cap="Stan model code", echo=FALSE, fig.width=1,out.height="5in"}
+knitr::include_graphics("../manuscript/figures/stan.pdf")
 ```
 
-```{r fig.cap="Realization of a Pareto (A) probability density function and (B) complementary cumulative distribution function.", echo=FALSE, fig.width=1,out.height="4in"}
-knitr::include_graphics("../manuscript/figures/pareto_demo-1.pdf")
+```{r fig.cap="Median (black line) and central 95 percent interval estimates of alpha (red lines). Here the 'true' alpha is 0.9.", echo=FALSE, fig.width=1,out.height="4in"}
+knitr::include_graphics("../manuscript/figures/bayesian_model-1.pdf")
 ```
 
-```{r fig.cap="Realization of a Pareto (A) probability density function and (B) complementary cumulative distribution function.", echo=FALSE, fig.width=1,out.height="4in"}
-knitr::include_graphics("../manuscript/figures/pareto_demo-1.pdf")
+```{r fig.cap="Median (black line) and central 95 percent interval estimates of total lake area (red lines). Here the true total lake area is marked with a dashed vertical line.", echo=FALSE, fig.width=1,out.height="4in"}
+knitr::include_graphics("../manuscript/figures/bayesian_area-1.pdf")
 ```
