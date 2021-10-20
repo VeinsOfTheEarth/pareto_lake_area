@@ -16,11 +16,19 @@ manuscript/manuscript.bbl
 
 
 # manuscript/figures/bayesian_model-1.pdf
-figures: manuscript/figures/pareto_demo-1.pdf \
-manuscript/figures/predict_censor-1.pdf \
-manuscript/figures/frequentist_uncertainty-1.pdf \
-manuscript/figures/bayesian_area-1.pdf
+figures: manuscripts/figures.pdf
 
+# manuscript/figures/frequentist_uncertainty-1.pdf
+# pdftk $^ cat output $@
+# Rscript -e ".libPaths(Sys.getenv('R_LIBS_USER')); rmarkdown::render('$<', output_format = 'pdf_document')"
+# -pdftk manuscript/figures.pdf cat 2-end output manuscript/figures2.pdf
+# -mv manuscript/figures2.pdf manuscript/figures.pdf
+# manuscript/figures.Rmd 
+manuscript/figures.pdf: manuscript/figures/pareto_demo-1.pdf \
+manuscript/figures/predict_censor-1.pdf \
+manuscript/figures/bayesian_model-1.pdf \
+manuscript/figures/bayesian_area-1.pdf
+	pdftk $^ cat output $@		
 
 manuscript/figures/pareto_demo-1.pdf: scripts/00_simulation.R
 	Rscript $<

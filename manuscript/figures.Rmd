@@ -1,0 +1,17 @@
+---
+title: "Figures"
+output:
+  pdf_document:
+    fig_caption: yes
+    keep_tex: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.path = "../figures/", fig.width = 5, fig.height = 6, dev = c("pdf"))
+```
+
+```{r fig.cap="Realization of a Pareto (A) probability density function and (B) complementary cumulative distribution
+function.", echo=FALSE, fig.width=1,out.height="4in"}
+knitr::include_graphics("manuscript/figures/pareto_demo-1.pdf")
+```
+
