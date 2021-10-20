@@ -46,7 +46,7 @@ if (!file.exists("data/pareto_bayes.rds")) {
     list(alpha = runif(1, 0.66, 1.334)) # from Downing et al. 2006
   }
 
-  fit <- stan(model_code = pareto_model,
+  fit <- stan(file = "pareto_model.stan",
     data = list(N = length(y_censored), x = y_censored),
     iter = 25000,
     control = list(adapt_delta = 0.9),
