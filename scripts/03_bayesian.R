@@ -42,9 +42,8 @@ model {
 
 
 if (!file.exists("data/pareto_bayes.rds")) {
-  alpha_inits <- 0.9
   init_f <- function() {
-    list(alpha = alpha_inits);
+    list(alpha = runif(1, 0.66, 1.334)) # from Downing et al. 2006
   }
 
   fit <- stan(model_code = pareto_model,
@@ -114,8 +113,8 @@ bayesian_area <- ggplot() +
   geom_vline(aes(xintercept = conf_int[2])) +
   geom_vline(aes(xintercept = total_empirical), linetype = 2) +
   xlim(
-  conf_int[2] - ((conf_int[2] - conf_int[1]) * 2),
-  conf_int[3] + ((conf_int[3] - conf_int[2]) * 2)
+    conf_int[2] - ((conf_int[2] - conf_int[1]) * 2),
+    conf_int[3] + ((conf_int[3] - conf_int[2]) * 2)
   )
 ggsave("manuscript/figures/bayesian_area-1.pdf", bayesian_area,
   width = 4.36, height = 2.33)
