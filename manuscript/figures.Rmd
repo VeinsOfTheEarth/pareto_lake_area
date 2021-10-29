@@ -14,11 +14,11 @@ knitr::opts_chunk$set(echo = TRUE, fig.path = "../figures/", fig.width = 5, fig.
 
 \pagebreak
 
-```{r fig.cap="Realization of a Pareto (A) probability density function and (B) complementary cumulative distribution function.", echo=FALSE, fig.width=1,out.height="4in"}
+```{r fig.cap="Realization of a Pareto (A) probability density function and (B) complementary cumulative distribution function compared against equivalent calculations on the HydroLAKES dataset.", echo=FALSE, fig.width=1,out.height="4in"}
 knitr::include_graphics("../manuscript/figures/pareto_demo-1.pdf")
 ```
 
-```{r fig.cap="Censored lake area edf (solid line) and cdf estimate (dashed line).", echo=FALSE, fig.width=1,out.height="4in"}
+```{r fig.cap="Censored lake area edf (solid line) and transformed cdf estimate (dashed line) compared against the HydroLAKES dataset.", echo=FALSE, fig.width=1,out.height="4in"}
 knitr::include_graphics("../manuscript/figures/predict_censor-1.pdf")
 ```
 
@@ -26,7 +26,7 @@ knitr::include_graphics("../manuscript/figures/predict_censor-1.pdf")
 knitr::include_graphics("../manuscript/figures/stan.pdf")
 ```
 
-```{r fig.cap="Median (black line) and central 95 percent interval estimates of alpha (red lines). Here the 'true' alpha is 0.9.", echo=FALSE, fig.width=1,out.height="4in"}
+```{r fig.cap="Median (black line) and central 95 percent interval estimates of alpha (red lines). Here the 'true' alpha is 0.9 and is marked with a dashed line.", echo=FALSE, fig.width=1,out.height="4in"}
 knitr::include_graphics("../manuscript/figures/bayesian_model-1.pdf")
 ```
 
