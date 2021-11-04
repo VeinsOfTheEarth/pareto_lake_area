@@ -75,8 +75,8 @@ preds <- setNames(preds, c("density", "lower", "upper"))
 cf_extra <- cbind(cf_extra, preds)
 cf_extra$type    <- "predicted"
 cf_extra$number <- exp(cf_extra$density) + log(max(cf$number))
-cf_extra$number_lower  <- exp(cf_extra$lower + max(log(cf$number)))
-cf_extra$number_upper  <- exp(cf_extra$upper + max(log(cf$number)))
+cf_extra$number_lower  <- exp(cf_extra$lower) + log(max(cf$number))
+cf_extra$number_upper  <- exp(cf_extra$upper) + log(max(cf$number))
 
 res <- dplyr::bind_rows(cf_extra, cf) %>%
   mutate(name = "simulated", lab = paste0(name, "-", type), area = area)
