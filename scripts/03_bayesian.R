@@ -46,11 +46,13 @@ if (!file.exists("data/pareto_bayes.rds")) {
     list(alpha = runif(1, 0.66, 1.334)) # from Downing et al. 2006
   }
 
-  fit <- stan(file = "pareto_model.stan",
+  fit <- stan(
+    file = "pareto_model.stan",
     data = list(N = length(y_censored), x = y_censored),
     iter = 25000,
     control = list(adapt_delta = 0.9),
-    init = init_f)
+    init = init_f
+  )
 
   # print(fit)
   # plot(fit, pars = "alpha")
@@ -72,9 +74,11 @@ bayesian_model <- ggplot() +
   geom_vline(aes(xintercept = 0.9), linetype = 2) +
   xlim(
     conf_int[2] - ((conf_int[2] - conf_int[1]) * 3),
-    conf_int[2] + ((conf_int[3] - conf_int[2]) * 3))
+    conf_int[2] + ((conf_int[3] - conf_int[2]) * 3)
+  )
 ggsave("manuscript/figures/bayesian_model-1.pdf", bayesian_model,
-  width = 4.43, height = 2.33)
+  width = 4.43, height = 2.33
+)
 
 # ---- bayesian_area ----
 
@@ -93,13 +97,12 @@ if (!file.exists("data/area_bayes.rds")) {
     cf_extra_bayes <- select(cf_extra, area)
     cf_extra_bayes$density <- (log(cf_extra_bayes$area) * (a * -1)) +
       log(min(y_censored)) - 0.1
-    cf_extra_bayes$type    <- "predicted_bayes"
-    cf_extra_bayes$number  <- exp(cf_extra_bayes$density + max(log(cf$number)))
+    cf_extra_bayes$type <- "predicted_bayes"
+    cf_extra_bayes$number <- exp(cf_extra_bayes$density + max(log(cf$number)))
     res <- dplyr::bind_rows(cf_extra_bayes, cf)
 
     sum(inv_cumulative_freq(res))
     # total_empirical
-
   })
 
   saveRDS(area_bayes, "data/area_bayes.rds")
@@ -117,7 +120,8 @@ bayesian_area <- ggplot() +
     conf_int[3] + ((conf_int[3] - conf_int[2]) * 2)
   )
 ggsave("manuscript/figures/bayesian_area-1.pdf", bayesian_area,
-  width = 4.36, height = 2.33)
+  width = 4.36, height = 2.33
+)
 
 # ggplot(data = res) +
 #   geom_line(aes(x = area, y = density, linetype = type)) +
