@@ -16,7 +16,7 @@ manuscript/manuscript.bbl
 
 
 # manuscript/figures/bayesian_model-1.pdf
-figures: manuscripts/figures.pdf
+figures: manuscript/figures.pdf
 
 # manuscript/figures/frequentist_uncertainty-1.pdf
 # pdftk $^ cat output $@
