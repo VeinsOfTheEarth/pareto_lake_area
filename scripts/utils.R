@@ -2,7 +2,7 @@
 
 suppressMessages(library(dplyr))
 library(magrittr)
-library(ggplot2)
+suppressMessages(library(ggplot2))
 library(cowplot)
 suppressMessages(library(rstan))
 suppressMessages(library(sf))
