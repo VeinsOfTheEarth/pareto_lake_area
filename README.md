@@ -13,7 +13,8 @@ Manuscript: [manuscript/manuscript.pdf](manuscript/manuscript.pdf)
 ### Reproducibility
 
 ```shell
-conda create -f environment.yml
+conda create -n paretolakes
+conda env update -f environment.yml
 source activate paretolakes
-Rscript -e "install.packages(c('tidybayes', 'cowplot'))"
+Rscript -e "install.packages(c('tidybayes', 'cowplot'), repos='https://cloud.r-project.org')"
 ```
