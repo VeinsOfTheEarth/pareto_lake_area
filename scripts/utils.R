@@ -25,15 +25,16 @@ rpareto <- function(n, a = 0.9, b = 1, max = Inf) {
 }
 
 individual_freq <- function(x) {
-  hist(log(x), plot = FALSE, n = 100) %>%  {
-    data.frame(x = .$breaks[-1], samples = log(.$counts))
-  }
+  hist(log(x), plot = FALSE, n = 100) %>%
+    {
+      data.frame(x = .$breaks[-1], samples = log(.$counts))
+    }
 }
 
 #' (dt <- sample(1:10, 12, replace = TRUE) %>% .[order(.)])
 #' (cf <- cumulative_freq(dt))
 cumulative_freq <- function(x) {
-  l_n    <- cumsum(rev(table(x)))
+  l_n <- cumsum(rev(table(x)))
   l_area <- rev(as.numeric(names(table(x))))
 
   data.frame(area = l_area, number = l_n)
@@ -58,8 +59,10 @@ config <- function(file = "config.py") {
 
   # remove non equal sign lines
   is_assignment <- as.logical(sapply(res, function(x) grep("=", x) >= 1))
-  is_assignment <- sapply(is_assignment,
-    function(x) ifelse(is.na(x), FALSE, TRUE))
+  is_assignment <- sapply(
+    is_assignment,
+    function(x) ifelse(is.na(x), FALSE, TRUE)
+  )
   res <- res[is_assignment]
 
   res <- strsplit(res, " ")
