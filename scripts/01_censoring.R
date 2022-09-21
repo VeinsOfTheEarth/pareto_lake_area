@@ -67,8 +67,8 @@ cf_extra <- data.frame(area = exp(seq(
   from = min(log(y_raw)),
   to   = min(log(y_censored_raw)),
   by   = abs(mean(diff(log(cf$area))))
-  ))
-  )
+))
+)
 
 preds <- data.frame(predict(fit_lm, cf_extra, interval = "confidence"))
 preds <- setNames(preds, c("density", "lower", "upper"))
