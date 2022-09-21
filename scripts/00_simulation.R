@@ -7,7 +7,11 @@ set.seed(234)
 # simulate random pareto draws
 # unlink("../data/y.rds")
 if (!file.exists("data/y.rds")) {
-  y_raw <- rpareto(153000, max = 81935.7) # cap at the area of Lake Superior
+  max <- 81935.7 # cap at the area of Lake Superior
+  y_raw <- rpareto(1183000, max = max)
+  while (abs(range(y_raw)[2] - max) > 500){
+    y_raw <- rpareto(1183000, max = max)
+  }
   y_individual <- mutate(individual_freq(y_raw), name = "simulated")
   y_cumulative <- mutate(cumulative_freq(y_raw), name = "simulated")
 
