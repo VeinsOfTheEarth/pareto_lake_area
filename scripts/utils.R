@@ -11,10 +11,10 @@ library(rstan)
 
 # functions ----
 
-dpareto <- function(x, a = 0.9, b = 1) a * b^a / x^(a + 1)
-ppareto <- function(x, a = 0.9, b = 1) (x > b) * (1 - (b / x)^a)
-qpareto <- function(u, a = 0.9, b = 1) b / (1 - u)^(1 / a)
-rpareto <- function(n, a = 0.9, b = 1, max = Inf) {
+dpareto <- function(x, a = 0.9, b = 0.1) a * b^a / x^(a + 1)
+ppareto <- function(x, a = 0.9, b = 0.1) (x > b) * (1 - (b / x)^a)
+qpareto <- function(u, a = 0.9, b = 0.1) b / (1 - u)^(1 / a)
+rpareto <- function(n, a = 0.9, b = 0.1, max = Inf) {
   res <- qpareto(runif(n), a, b)
   res <- res[res < max]
 
@@ -27,7 +27,7 @@ rpareto <- function(n, a = 0.9, b = 1, max = Inf) {
 individual_freq <- function(x) {
   hist(log(x), plot = FALSE, n = 100) %>%
     {
-      data.frame(x = .$breaks[-1], samples = log(.$counts))
+      data.frame(x = .$breaks[c(-1, -2)], samples = log(.$counts)[-1])
     }
 }
 
