@@ -6,7 +6,7 @@ y_raw <- y$y_raw
 # hist(log(y_raw))
 
 # remove lakes below censor threshold ----
-y_censored_raw <- y_raw[log(y_raw) > 1]
+y_censored_raw <- y_raw[log(y_raw) > log(as.numeric(quantile(y_raw, 0.6)))]
 y_censored_cumulative <- mutate(
   cumulative_freq(y_censored_raw), name = "censored")
 y_censored_individual <- individual_freq(y_censored_raw)
