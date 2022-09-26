@@ -9,3 +9,6 @@ draft.pdf: draft.md
 	xelatex draft.tex
 	xelatex draft.tex
 	-rm draft.log draft.aux draft.out draft.blg # draft.bbl draft.tex
+
+response-to-reviewers.pdf: response-to-reviewers.md
+	pandoc $< -H quote_setup.tex -V geometry:margin=1in -o $@
