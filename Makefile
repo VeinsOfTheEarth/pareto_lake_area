@@ -46,7 +46,10 @@ manuscript/figures/stan.pdf: pareto_model.stan
 	pdfcrop $@ $@
 	pdfcrop --margins '0 -30 -200 0' --clip $@ $@
 
-manuscript/figures/bayesian_area-1.pdf: scripts/03_bayesian.R manuscript/figures/predict_censor-1.pdf
+data/pareto_bayes.rds: scripts/03_bayesian.R manuscript/figures/predict_censor-1.pdf	
+	Rscript $<
+
+manuscript/figures/bayesian_area-1.pdf: scripts/03_bayesian.R data/pareto_bayes.rds
 	Rscript $<
 
 manuscript: manuscript/manuscript.pdf
