@@ -61,9 +61,10 @@ manuscript/manuscript.bbl: manuscript/manuscript.tex manuscript/pareto-lakes.bib
 	cd manuscript && pdflatex manuscript.tex
 
 clean:
-	-rm -rf manuscript/figures
-	-mkdir manuscript/figures
-	-mkdir -p manuscript/figures
-	-rm arxiv_submission.zip
-	-rm manuscript/manuscript.bbl
-	-rm data/pareto_bayes.rds data/alphas.rds data/area_bayes.rds 
+	-@rm core.*
+	# -rm -rf manuscript/figures
+	# -mkdir manuscript/figures
+	# -mkdir -p manuscript/figures
+	# -rm arxiv_submission.zip
+	# -rm manuscript/manuscript.bbl
+	#-rm data/pareto_bayes.rds data/alphas.rds data/area_bayes.rds 
