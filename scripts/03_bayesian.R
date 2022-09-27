@@ -50,6 +50,7 @@ if (!file.exists("data/pareto_bayes.rds")) {
     file = "pareto_model.stan",
     data = list(N = length(y_censored), x = y_censored),
     iter = 25000,
+    chains=4,
     control = list(adapt_delta = 0.9),
     init = init_f
   )
@@ -96,7 +97,7 @@ if (!file.exists("data/area_bayes.rds")) {
     # a <- alphas[1]
     cf_extra_bayes <- select(cf_extra, area)
     cf_extra_bayes$density <- (log(cf_extra_bayes$area) * (a * -1)) +
-      log(min(y_censored)) - 0.1
+      log(min(y_censored)) - 0.085
     cf_extra_bayes$type <- "predicted_bayes"
     cf_extra_bayes$number <- exp(cf_extra_bayes$density + max(log(cf$number)))
     res <- dplyr::bind_rows(cf_extra_bayes, cf)
