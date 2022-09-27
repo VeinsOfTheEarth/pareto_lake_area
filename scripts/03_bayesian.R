@@ -68,15 +68,22 @@ if (!file.exists("data/alphas.rds")) {
 alphas <- readRDS("data/alphas.rds")
 
 conf_int <- quantile(alphas, probs = c(0.025, 0.5, .975))
+alphas_sim <- rlnorm(n = 100000,
+  meanlog = log(conf_int[2]),
+  sdlog = conf_int[2] - conf_int[1])
+conf_int <- quantile(alphas_sim, probs = c(0.025, 0.5, .975))
+
 bayesian_model <- ggplot() +
-  geom_histogram(data = data.frame(alpha = alphas), aes(x = alpha)) +
+  geom_histogram(data = data.frame(alpha = alphas_sim),
+    aes(x = alpha), binwidth = (conf_int[2] - conf_int[1]) / 10) +
   geom_vline(aes(xintercept = conf_int[c(1, 3)]), color = "red") +
   geom_vline(aes(xintercept = conf_int[2])) +
   geom_vline(aes(xintercept = 0.9), linetype = 2) +
   xlim(
-    conf_int[2] - ((conf_int[2] - conf_int[1]) * 3),
-    conf_int[2] + ((conf_int[3] - conf_int[2]) * 3)
+    conf_int[2] - ((conf_int[2] - conf_int[1]) * 2.5),
+    conf_int[2] + ((conf_int[3] - conf_int[2]) * 2.5)
   )
+bayesian_model
 ggsave("manuscript/figures/bayesian_model-1.pdf", bayesian_model,
   width = 4.43, height = 2.33
 )
@@ -93,7 +100,7 @@ total_empirical <- sum(inv_cumulative_freq(cumulative_freq(y_raw)))
 if (!file.exists("data/area_bayes.rds")) {
   # find estimated density of censored lakes given alpha
   # back-out an estimate of total area
-  area_bayes <- sapply(alphas, function(a) {
+  area_bayes <- sapply(sample(alphas_sim, 700), function(a) {
     # a <- alphas[1]
     cf_extra_bayes <- select(cf_extra, area)
     cf_extra_bayes$density <- (log(cf_extra_bayes$area) * (a * -1)) +
@@ -118,7 +125,7 @@ bayesian_area <- ggplot() +
   geom_vline(aes(xintercept = total_empirical), linetype = 2) +
   xlim(
     conf_int[2] - ((conf_int[2] - conf_int[1]) * 2),
-    conf_int[3] + ((conf_int[3] - conf_int[2]) * 2)
+    conf_int[3] + ((conf_int[3] - conf_int[2]))
   )
 ggsave("manuscript/figures/bayesian_area-1.pdf", bayesian_area,
   width = 4.36, height = 2.33

@@ -22,10 +22,6 @@ knitr::include_graphics("../manuscript/figures/pareto_demo-1.pdf")
 knitr::include_graphics("../manuscript/figures/predict_censor-1.pdf")
 ```
 
-```{r fig.cap="Stan model code", echo=FALSE, fig.width=1,out.height="5in"}
-knitr::include_graphics("../manuscript/figures/stan.pdf")
-```
-
 ```{r fig.cap="Median (black line) and central 95 percent interval estimates of alpha (red lines). Here the 'true' alpha is 0.9 and is marked with a dashed line.", echo=FALSE, fig.width=1,out.height="4in"}
 knitr::include_graphics("../manuscript/figures/bayesian_model-1.pdf")
 ```
