@@ -49,8 +49,8 @@ if (!file.exists("data/pareto_bayes.rds")) {
   fit <- stan(
     file = "pareto_model.stan",
     data = list(N = length(y_censored), x = y_censored),
-    iter = 25000,
-    chains=4,
+    iter = 15000,
+    chains = 4,
     control = list(adapt_delta = 0.9),
     init = init_f
   )
@@ -68,14 +68,18 @@ if (!file.exists("data/alphas.rds")) {
 alphas <- readRDS("data/alphas.rds")
 
 conf_int <- quantile(alphas, probs = c(0.025, 0.5, .975))
-alphas_sim <- rlnorm(n = 100000,
+alphas_sim <- rlnorm(
+  n = 100000,
   meanlog = log(conf_int[2]),
-  sdlog = conf_int[2] - conf_int[1])
+  sdlog = conf_int[2] - conf_int[1]
+)
 conf_int <- quantile(alphas_sim, probs = c(0.025, 0.5, .975))
 
 bayesian_model <- ggplot() +
-  geom_histogram(data = data.frame(alpha = alphas_sim),
-    aes(x = alpha), binwidth = (conf_int[2] - conf_int[1]) / 10) +
+  geom_histogram(
+    data = data.frame(alpha = alphas_sim),
+    aes(x = alpha), binwidth = (conf_int[2] - conf_int[1]) / 10
+  ) +
   geom_vline(aes(xintercept = conf_int[c(1, 3)]), color = "red") +
   geom_vline(aes(xintercept = conf_int[2])) +
   geom_vline(aes(xintercept = 0.9), linetype = 2) +
