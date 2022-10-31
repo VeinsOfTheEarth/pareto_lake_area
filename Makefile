@@ -63,6 +63,12 @@ manuscript/manuscript.bbl: manuscript/manuscript.tex manuscript/pareto-lakes.bib
 	cd manuscript && bibtex manuscript
 	cd manuscript && pdflatex manuscript.tex
 
+manuscript/eidr.pdf: manuscript/eidr.md
+	pandoc -o $@ $< -V geometry:margin=1in
+
+archive.zip:
+	git archive --format zip --output archive.zip master
+
 clean:
 	-@rm core.*
 	# -rm -rf manuscript/figures
