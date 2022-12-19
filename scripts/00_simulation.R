@@ -61,7 +61,8 @@ gg_individual <- rbind(y$y_individual, hydrolakes$hydrolakes_individual) %>%
   ylab("log(n)") +
   xlab("log(area)") +
   theme_minimal() +
-  theme(legend.position = "none")
+  theme(legend.position = "none") +
+  scale_color_viridis_d(direction=-1)
 
 gg_cumulative <- rbind(y$y_cumulative, hydrolakes$hydrolakes_cumulative) %>%
   ggplot() +
@@ -71,7 +72,8 @@ gg_cumulative <- rbind(y$y_cumulative, hydrolakes$hydrolakes_cumulative) %>%
   scale_y_log10() +
   ylab("n > area") +
   xlab("area") +
-  labs(color = "")
+  labs(color = "") +
+  scale_color_viridis_d(direction=-1)
 
 pareto_demo <- plot_grid(gg_individual, gg_cumulative,
   nrow = 1, rel_widths = c(0.68, 1)

@@ -95,7 +95,8 @@ predict_censor <- rbind(
   geom_line(aes(area, number, color = name, linetype = type)) +
   theme_minimal() + scale_x_log10() + scale_y_log10() +
   ylab("n > area") + xlab("area") +
-  labs(color = "")
+  labs(color = "") +
+  scale_color_viridis_d(direction=-1)
 
 ggsave("manuscript/figures/predict_censor-1.pdf", predict_censor,
   width = 4.28, height = 2.33)
