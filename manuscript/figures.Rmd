@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE, fig.path = "../figures/", fig.width = 5, fig.
 knitr::include_graphics("../manuscript/figures/pareto_demo-1.pdf")
 ```
 
-```{r fig.cap="Simulated lake area (blue line) where the portion (>= 0.1 $km^2$) calculated from the edf is denoted by a solid line and the portion (< 0.1 $km^2$) calculated from the transformed cdf is denoted by a dashed line. For comparison, the edf of the HydroLAKES dataset (red line) is also shown.", echo=FALSE, fig.width=1,out.height="4in"}
+```{r fig.cap="Simulated lake area (blue line) where the portion calculated from the edf (>= 0.1 $km^2$) is denoted by a solid line and the portion calculated from the transformed cdf (< 0.1 $km^2$) is denoted by a dashed line. For comparison, the edf of the HydroLAKES dataset (solid red line) is also shown.", echo=FALSE, fig.width=1,out.height="4in"}
 knitr::include_graphics("../manuscript/figures/predict_censor-1.pdf")
 ```
 
