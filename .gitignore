@@ -10,19 +10,22 @@ acs-*.bib
 archive.zip
 arxiv_submission.zip
 config.py
+Rplots.pdf
 
 manuscript/*.aux
 manuscript/*.bbl
 manuscript/*.blg
+manuscript/*.docx
 manuscript/*.log
+manuscript/*.md
 manuscript/*.out
-manuscript/eidr.md
+manuscript/*.pdf
 manuscript/eidr.pdf
 manuscript/feedback_hanson.md
+manuscript/figures/*.png
 manuscript/figures.tex
 manuscript/response-to-reviewers.md
-manuscript/response-to-reviewers.pdf
-manuscript/save_manuscript.pdf
+manuscript/save_figures
 manuscript/save_manuscript.Rmd
 
 pythontex-files-*/
