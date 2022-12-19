@@ -57,6 +57,7 @@ manuscript: manuscript/manuscript.pdf
 manuscript/manuscript.pdf: manuscript/manuscript.tex manuscript/pareto-lakes.bib
 	cd manuscript && pdflatex manuscript.tex
 	cd manuscript && bibtex manuscript
+	cd manuscript && pdflatex manuscript.tex
 
 manuscript/manuscript.bbl: manuscript/manuscript.tex manuscript/pareto-lakes.bib
 	cd manuscript && pdflatex manuscript.tex
