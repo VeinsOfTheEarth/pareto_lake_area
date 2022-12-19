@@ -92,72 +92,48 @@ where $A$ is lake area, $a$ controls the “shape” of the distribution and $x_
 
 The reason for using the ccdf is two-fold. First, it stabilizes model estimates in the lower tail of the distribution \citep{newman_power_2005}. This can be seen from the simulated data in Figure \ref{fig:pareto_demo} where the Pareto pdf contains a lot of noise in the tail but the ccdf appears smoothed. The smoothing of the tail is also desirable because it functions as a way of dealing with the truncated nature of lake databases (i.e. the area of large lakes is known exactly). The second reason for using the ccdf is that it provides a computational shortcut for estimating the Pareto shape parameter $a$ because it is numerically equivalent to the slope of the ccdf in log-log space \citep{downingGlobalAbundanceSize2006}.
 
-\begin{figure}
+\begin{figure}[h]
 	\centering
 	\includegraphics{figures/pareto_demo-1}
-	\caption{Realization of a Pareto (A) probability density function and (B) complementary cumulative distribution function.}
+	\caption{Realization of a Pareto (A) probability density function and (B) complementary cumulative distribution function compared against equivalent calculations on the HydroLAKES dataset.}
 	\label{fig:pareto_demo}
 \end{figure}
 
 For evaluation purposes, I generated a simulated dataset of 153,000 lake areas following the Pareto distribution using inverse transform sampling \citep{newman_power_2005}. Lakes in my simulated dataset have a minimum and maximum area of approximately 0.1 and 81,000 $km^2$ respectively. This maximum was chosen to be approximately as large as Lake Superior but less than the Caspian Sea following \citep{lehnerDevelopmentValidationGlobal2004}. The number of lakes in the simulated dataset was adjusted so that the total “true” area of the dataset (3.28 mil $km^2$) would approximately match (but still exceed) the total reported in the HydroLAKES dataset (2.93 mil $km^2$). I simulated a censored lake dataset by excluding approximately 60\% of lakes in the total dataset. I approximated the "true" lake area total by constructing the empirical distribution function (edf) of the data which approximates the underlying Pareto cdf \citep{newman_power_2005}. Then I used this estimate of the cdf slope to generate cdf estimates for the censored lakes. I combined these cdf estimates with the edf values from the known lakes before calculating the sum of the inverted distribution \ref{fig:predict_area}.
 
-I estimated the Pareto shape parameter $a$ in a frequentist framework by calculating the the slope of the edf in log-log space using linear regression in \texttt{R} \citep{team2013r}. I evaluated uncertainty in both $a$ and total lake area in a Bayesian framework using Stan \citep{standevelopmentteamStanModelingLanguage2017}. Instead of computing on the edf (as in the frequentist case), I computed directly on the pdf with the following Stan model:
+I estimated the Pareto shape parameter $a$ in a frequentist framework by calculating the the slope of the edf in log-log space using linear regression in \texttt{R} \citep{team2013r}. I evaluated uncertainty in both $a$ and total lake area in a Bayesian framework using Stan \citep{standevelopmentteamStanModelingLanguage2017}. Instead of computing on the edf (as in the frequentist case), I computed directly on the pdf with a Stan model \citep
+[See][]{jemma_stachelek_2022_7459227}. I used uninformative gamma priors for both the $x_{min}$ and $a$ parameters following \citet{scollnikCompositeLognormalParetoModels2007}. I ran the model with four chains of 25,000 iterations and used the Stan defaults for thinning and burn-in which specify no thinning and discarding the first half (12,500) of iterations. I examined model fits to ensure that all models had acceptable convergence of MCMC chains.
 
-\begin{minipage}[c]{0.95\textwidth}
-	\begin{lstlisting}
-data {
-  int<lower=0> N;
-  real x[N];
-}
-parameters {
-  real<lower=0> alpha;
-  real<lower=0> xmin;
-}
-model {
-  real lpa[N];
+Finally, I evaluated empirical uncertainty in total lake area using the size-dependent detection/non-detection estimates reported by \citet{cheruvelil2021lagos} which found that about 80\% of lakes $<$ 1 $km^2$ and 95\% of lakes between 1 and 10 $km^2$ were accurately represented in the US National Hydrograph Network. I implemented a random sampling (n=500) procedure using these detection fractions whereby empirical uncertainty is reported as the quantiles of the resulting distribution.
 
-  xmin ~ gamma(.001, .001);
-  alpha ~ gamma(.001, .001);
+\section{Assessment}
 
-  for (i in 1:N) {
-    lpa[i] = pareto_lpdf(x[i] | xmin, alpha);
-  }
+The total area of the simulated dataset (3.28 mil. $km^2$, Table \ref{tab:area}) was larger than the empirical total of the HydroLAKES (2.67 mil. $km^2$) dataset. Visual inspection of the frequentist results, which are computed on the edf, appeared to produce a reasonable density estimate for small, censored lakes (Figure \ref{fig:predict_censor}). Although frequentist estimates of total lake area were close to the "true" value, uncertainty bounds were unrealistically small compared to an empirical estimate of uncertainty (Table \ref{tab:area}).
 
-  target += sum(lpa);
-}
-\end{lstlisting}
-\end{minipage}
+In contrast to the fixed a and fixed total lake area estimates produced by the frequentist approach, I found substantial variability in both a (95\% CI: 0.65, 1.02) and total area using a Bayesian approach (Figure \ref{fig:bayesian_model}, \ref{fig:bayesian_area}). In particular, the Bayesian 95\% credible intervals for a encapsulated the true value (Figure \ref{fig:bayesian_model}). Despite larger uncertainty estimates using a Bayesian approach (i.e. more closely matching the empirical estimate of uncertainty), the true value of total lake area was underestimated. The reason for this underestimation is likely owed to incomplete “back calculation” in the cutoff method (i.e. back calculated lakes did not extend all the way to the smallest lakes in the simulated dataset).
 
-I used uninformative gamma priors for both the $x_{min}$ and $a$ parameters following \citet{scollnikCompositeLognormalParetoModels2007}. I ran the model with four chains of 8,000 iterations and used the Stan defaults for burn-in and thinning which specify a burn-in of half the iterations and no thinning.
-
-\section{Results}
-
-Visual inspection of the frequentist method of computing on the edf appeared to produce a reasonable density estimate for small censored lakes (Figure \ref{fig:predict_area}). In addition, estimates of total lake area are somewhat close to the "true" value (Table \ref{tab:pred_table}). However, uncertainty around the frequentist estimates is unrealistically small (Figure \ref{tab:frequentist_uncertainty}).
 
 \begin{figure}
 	\centering
 	\includegraphics{figures/predict_censor-1}
-	\caption{Censored lake area edf (solid line) and cdf estimate (dashed line).}
+	\caption{Simulated lake area (blue line) where the portion calculated from the edf (>= 0.1 $km^2$) is denoted by a solid line and the portion calculated from the transformed cdf (< 0.1 $km^2$) is denoted by a dashed line. For comparison, the edf of the HydroLAKES dataset (solid red line) is also shown.}
 	\label{fig:predict_censor}
 \end{figure}
 
-% \begin{figure}
-% 	\centering
-% 	\includegraphics{figures/frequentist_uncertainty-1}
-% 	\caption{Confidence interval of frequentist density predictions for censored data (the dashed portion in Figure 2. The confidence interval here has essentially no width.}
-% 	\label{tab:frequentist_uncertainty}
-% \end{figure}
 \begin{table}
-	\caption{Frequentist uncertainty}
+	\caption{Comparison between the true total lake area in the simulated dataset against frequentist and Bayesian estimates. The true total is a point estimate while uncertainty is displayed via differences between the 95th and 5th quantile.}
 	\centering
-	\begin{tabular}{ccc}
+	\begin{tabular}{lllll}
 		\toprule
-		Q5 ($km^2$) & Q50 ($km^2$) & Q95 ($km^2$) \\
+		& Q50 (mil $km^2$) & Q5 (mil $km^2$) & Q95 (mil $km^2$) & Q95-Q5 \\
 		\midrule
-		2.271e+05          & 2.263e+05   & 123     \\
+		True (point estimate) & 3.278 & - & - & - \\
+		True (80\% non-detect) & 3.205 & 3.205 & 3.205 & 673  \\
+		Frequentist & 3.274 & 3.274 & 3.274 & 14  \\
+		Bayesian & 3.199 & 3.158 & 3.273 & 115172 \\
 		\bottomrule
-	\end{tabular}
-	\label{tab:frequentist_uncertainty}
+	   \end{tabular}	
+	\label{tab:area}
 \end{table}
 
 \begin{figure}
@@ -174,30 +150,43 @@ Visual inspection of the frequentist method of computing on the edf appeared to 
 	\label{fig:bayesian_area}
 \end{figure}
 
-Instead of the essentially fixed $a$ and total lake area estimates produced by the frequentist approach, I found substantial variability in both $a$ (95\% CI: 0.86, 0.92) and total area using a Bayesian approach (Fig \ref{fig:bayesian_model}, \ref{fig:bayesian_area}). In particular, the Bayesian 95\% credible intervals for both $a$ and total lake area encapsulate the true values (Fig \ref{fig:bayesian_model}, \ref{fig:bayesian_area}). Despite better uncertainty estimates using a Bayesian approach, both the frequentist and Bayesian approaches underestimated the true value of $a$ and total lake area.
-
-\begin{table}
-	\caption{'True' total lake area from the uncensored edf and estimated lake area from a combination of the censored edf and the estimated cdf.}
-	\centering
-	\begin{tabular}{cc}
-		\toprule
-		True Area ($km^2$) & Estimated Area ($km^2$) \\
-		\midrule
-		2.271e+05          & 2.263e+05               \\
-		\bottomrule
-	\end{tabular}
-	\label{tab:pred_table}
-\end{table}
-
 \section{Discussion}
 
-I have shown that the typical frequentist cutoff method produces reasonable estimates of the density of small censored lakes but that it does not capture uncertainty in total lake area (Table \ref{tab:pred_table}, Figure \ref{tab:frequentist_uncertainty}). Furthermore, I have shown that models fit using a Bayesian approach indicate substantial uncertainty in both total lake area and the underlying Pareto shape parameter $a$ used to derive these estimates (Figure \ref{fig:bayesian_model}, \ref{fig:bayesian_area}).
+I have shown that the even with realistic estimates of the density of small censored lakes, the typical frequentist cutoff method does not reasonably capture uncertainty in total lake area (Table \ref{tab:area}). However, the results of the Bayesian approach by contrast, indicate substantial uncertainty in both total lake area and the underlying Pareto shape parameter a used to derive these estimates (Figure \ref{fig:bayesian_model}, \ref{fig:bayesian_area}). The combination of accurate lake area accounting and realistic uncertainty estimates offered by this approach may provide a more principled way to assess the relative influence of different lake area classes on global lake fluxes ($CO^2$, $CH^4$, etc.)  beyond ad-hoc study intercomparisons or even meta-analysis on collections of prior studies.
 
-Although the 95\% credible interval of the Bayesian total lake area estimates encapsulate the true total lake area, the median value underestimates the true total lake area (Figure \ref{fig:bayesian_area}). It is likely that such underestimation, would increase with a greater proportion of censoring. This may explain the steady increase in estimates of global lake area through time from approximately 3 to 5 million $km^{2}$ as lake area databases have improved their accuracy \citep{lehnerDevelopmentValidationGlobal2004, downingGlobalAbundanceSize2006, verpoorterGlobalInventoryLakes2014}. Future work on estimating global lake area should consider implementing a sensitivity analysis looking at the response of total area estimates to variation in the degree of censoring.
+The Bayesian model estimate of total lake area was an underestimate of the true total lake area of the simulated datasets (Figure \ref{fig:bayesian_area}). Some of this underestimation is because the Pareto shape parameter a was estimated from the truncated dataset (to simulate the fact that observed datasets such as HydroLAKES have some unknown degree of truncation) and was lower ({\raise.17ex\hbox{$\scriptstyle\mathtt{\sim}$}}0.82) than the true value of 0.9. This lower value of a resulted in lower than expected total lake area. Such underestimation would increase with a greater proportion of censoring. Another likely contributor to lake area underestimation is differences in the properties of the simulated data compared to an empirical dataset like HydroLAKES. Note that the simulated dataset diverges notably from HydroLAKES for the largest waterbodies because these are few in number such that randomness in the simulation is more obvious (Figure \ref{fig:pareto_demo}). Taken together, these factors (i.e. less and less truncation and better data on the largest waterbodies) may explain the steady increase in estimates of global lake area through time from approximately 3 to 5 million $km^2$ as lake area databases have improved their accuracy \citep{downingGlobalAbundanceSize2006,lehnerDevelopmentValidationGlobal2004,verpoorterGlobalInventoryLakes2014}. Future work on estimating global lake area may consider implementing a sensitivity analysis looking at the response of total area estimates to variation in the degree of censoring.
 
-A caveat of the present study is that it is difficult to confirm whether or not any particular dataset follows a fractal generating or Pareto process without strong prior knowledge. Indeed data following many heavy-tailed distributions such as the lognormal or negative exponential can appear to be equivalent to power-law distributions such as the Pareto \citep{clausetPowerlawDistributionsEmpirical2009}. The results of the present study confirm that an apparent change in the shape of the lower tail of a lake area distribution does not necessarily indicate a change in the data generating process. Note that the simulation dataset analyzed herein \emph{is} a truly fractal generated dataset with a homogeneous data generating process yet a cursory look would seem to indicate a change of data-generating process in the lower tail (Figure \ref{fig:predict_area}).
+Another area where further sensitivity analyses may be warranted is in the generation of total lake area estimates from Pareto realizations. Typically this is done a single time such that any particular reported estimate comes only from a single realization. To generate the simulated dataset for the present study, I generated multiple realizations with the goal of arriving at one that approximately matched the total reported in HydroLAKES. Although each realization matched the Pareto properties of HydroLAKES, the sum of many of the realizations differed markedly from each other and from HydroLAKES. This demonstrates the need for generating multiple Pareto estimates of total lake area for aquatic process upscaling as part of a sensitivity analysis rather than taking only a single realization.
 
-In addition to a sensitivity analysis of censoring, future work might consider more complex models that treat lake areas as a mixture of a Pareto distribution for small lakes and either a negative exponential or lognormal distribution for large lakes. Such an approach has been demonstrated by \citet{bonabeau_scaling_1999-1} and \citet{scollnikCompositeLognormalParetoModels2007}. Both studies show that the point at which the distribution mixtures converge can provide valuable inference. In the case of lakes, such a convergence point may indicate a change in the data generating process such as the point at which lake areas are controlled by continent placement rather than fractal landscape morphology \citep{goodchildLakesFractalSurfaces1988, hamiltonEstimationFractalDimension1992}.
+A caveat of the present study is that it is difficult to confirm whether or not any particular dataset follows a fractal generating or Pareto process without strong prior knowledge. As a result, there is some degree to which we cannot know whether the distribution of lake areas truly aligns with the Pareto distribution \citep{seekell2011does}. Indeed data following many heavy-tailed distributions such as the lognormal or negative exponential can appear to be equivalent to power-law distributions such as the Pareto \citep{clausetPowerlawDistributionsEmpirical2009,seekell2011does}. The results of the present study confirm that an apparent change in the shape of the lower tail of a lake area distribution does not necessarily indicate a change in the data generating process. Note that the simulation dataset analyzed herein is a truly fractal generated dataset with a homogeneous data generating process, yet a cursory look would seem to indicate a change of data-generating process in the lower tail (Figure \ref{fig:predict_censor}).
+
+In addition to a sensitivity analysis of censoring, future work might consider more complex models that treat lake areas as a mixture of a Pareto distribution for small lakes and either a negative exponential or lognormal distribution for large lakes. Such an approach has been demonstrated by \citep{bonabeau_scaling_1999-1} and \citep{scollnikCompositeLognormalParetoModels2007}. Both studies show that the point at which the distribution mixtures converge can provide valuable inference. In the case of lakes, such a convergence point may indicate a change in the data generating process such as the point at which lake areas are controlled by continent placement rather than fractal landscape morphology \citep{goodchildLakesFractalSurfaces1988,hamiltonEstimationFractalDimension1992}. Knowing such a convergence point would provide a data-driven estimate of what constitutes a “large lake” beyond ad-hoc cutoffs and supplement existing definitions based on hydrodynamics and circulation.
+
+
+% \begin{minipage}[c]{0.95\textwidth}
+% 	\begin{lstlisting}
+% data {
+%   int<lower=0> N;
+%   real x[N];
+% }
+% parameters {
+%   real<lower=0> alpha;
+%   real<lower=0> xmin;
+% }
+% model {
+%   real lpa[N];
+
+%   xmin ~ gamma(.001, .001);
+%   alpha ~ gamma(.001, .001);
+
+%   for (i in 1:N) {
+%     lpa[i] = pareto_lpdf(x[i] | xmin, alpha);
+%   }
+
+%   target += sum(lpa);
+% }
+% \end{lstlisting}
+% \end{minipage}
 
 \bibliographystyle{jsta}
 \bibliography{pareto-lakes}
