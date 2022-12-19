@@ -10,7 +10,7 @@ Code and data for the publication:
 
 Manuscript: [manuscript/manuscript.pdf](manuscript/manuscript.pdf)
 
-Stan model: [manuscript/figures/stan.png](manuscript/figures/stan.png)
+Stan model: [pareto_model.stan](pareto_model.stan)
 
 <img src="manuscript/figures/stan.png" alt="stan model" width="800"/>
 
