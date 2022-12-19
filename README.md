@@ -12,7 +12,7 @@ Manuscript: [manuscript/manuscript.pdf](manuscript/manuscript.pdf)
 
 Stan model: [pareto_model.stan](pareto_model.stan)
 
-<img src="manuscript/figures/stan.png" alt="stan model" width="800"/>
+<img src="manuscript/figures/stan.png" alt="stan model" width="650"/>
 
 ### Reproducibility
 
