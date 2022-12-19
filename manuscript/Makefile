@@ -12,3 +12,6 @@ draft.pdf: draft.md
 
 response-to-reviewers.pdf: response-to-reviewers.md
 	pandoc $< -H quote_setup.tex -V geometry:margin=1in -o $@
+
+response-to-reviewers_v2.pdf: response-to-reviewers_v2.md
+	pandoc $< -H quote_setup.tex -V geometry:margin=1in -o $@
