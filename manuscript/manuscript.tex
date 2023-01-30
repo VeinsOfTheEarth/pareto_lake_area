@@ -32,8 +32,8 @@
 %\date{}
 
 % Uncomment to override  the `A preprint' in the header
-%\renewcommand{\headeright}{Technical Report}
-%\renewcommand{\undertitle}{Technical Report}
+\renewcommand{\headeright}{\href{https://doi.org/}{DOI: 10.XXX/XXX}}
+\renewcommand{\undertitle}{This is an Accepted Manuscript of an article published in Limnology \& Oceanography: Methods \href{https://doi.org/}{DOI: 10.XXX/XXX}}
 \renewcommand{\shorttitle}{Pareto lake area uncertainty}
 
 %%% Add PDF metadata to help others organize their library
@@ -161,6 +161,14 @@ Another area where further sensitivity analyses may be warranted is in the gener
 A caveat of the present study is that it is difficult to confirm whether or not any particular dataset follows a fractal generating or Pareto process without strong prior knowledge. As a result, there is some degree to which we cannot know whether the distribution of lake areas truly aligns with the Pareto distribution \citep{seekell2011does}. Indeed data following many heavy-tailed distributions such as the lognormal or negative exponential can appear to be equivalent to power-law distributions such as the Pareto \citep{clausetPowerlawDistributionsEmpirical2009,seekell2011does}. The results of the present study confirm that an apparent change in the shape of the lower tail of a lake area distribution does not necessarily indicate a change in the data generating process. Note that the simulation dataset analyzed herein is a truly fractal generated dataset with a homogeneous data generating process, yet a cursory look would seem to indicate a change of data-generating process in the lower tail (Figure \ref{fig:predict_censor}).
 
 In addition to a sensitivity analysis of censoring, future work might consider more complex models that treat lake areas as a mixture of a Pareto distribution for small lakes and either a negative exponential or lognormal distribution for large lakes. Such an approach has been demonstrated by \citep{bonabeau_scaling_1999-1} and \citep{scollnikCompositeLognormalParetoModels2007}. Both studies show that the point at which the distribution mixtures converge can provide valuable inference. In the case of lakes, such a convergence point may indicate a change in the data generating process such as the point at which lake areas are controlled by continent placement rather than fractal landscape morphology \citep{goodchildLakesFractalSurfaces1988,hamiltonEstimationFractalDimension1992}. Knowing such a convergence point would provide a data-driven estimate of what constitutes a “large lake” beyond ad-hoc cutoffs and supplement existing definitions based on hydrodynamics and circulation.
+
+\section{Data Availability Statement}
+
+All data and code associated with this manuscript are available at: \href{https://doi.org/10.5281/zenodo.7459226}{https://doi.org/10.5281/zenodo.7459226}
+
+\section{Acknowledgements}
+
+This work was supported by the U.S. National Science Foundation’s Harnessing the Data Revolution Program (OAC-1934633) and Los Alamos National Laboratory (LDRD-20210213ER, LDRD-20220697PRD1). I thank the following individuals for a friendly review of an earlier draft: P.C. Hanson, E. Zipkin.
 
 
 % \begin{minipage}[c]{0.95\textwidth}

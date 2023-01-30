@@ -4,11 +4,11 @@
 
 Code and data for the publication:
 
-> **Stachelek, J.**, *Under Revision* Quantifying uncertainty in Pareto estimates of global lake area.
+> **Stachelek, J.**, *Accepted* Quantifying uncertainty in Pareto estimates of global lake area. Limnology & Oceanography: Methods
 
 ### Products
 
-Manuscript: [manuscript/manuscript.pdf](manuscript/manuscript.pdf)
+Accepted Manuscript: [manuscript/manuscript.pdf](manuscript/manuscript.pdf)
 
 Stan model: [pareto_model.stan](pareto_model.stan)
 
