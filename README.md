@@ -1,12 +1,10 @@
 ## Quantifying uncertainty in Pareto estimates of global lake area
 
-
-
 [![Paper DOI](https://img.shields.io/badge/Paper-10.1002/LOM3.10536-blue.svg)](https://doi.org/10.1002/LOM3.10536) [![Code DOI](https://img.shields.io/badge/Code-10.5281/zenodo.7459226-blue.svg)](https://doi.org/10.5281/zenodo.7459226)
 
 Code and data for the publication:
 
-> **Stachelek, J.**, *Accepted* Quantifying uncertainty in Pareto estimates of global lake area. Limnology & Oceanography: Methods
+> **Stachelek, J.**, 2023. Quantifying uncertainty in Pareto estimates of global lake area. Limnology & Oceanography: Methods. [10.1002/LOM3.10536](https://doi.org/10.1002/LOM3.10536)
 
 ### Products
 
